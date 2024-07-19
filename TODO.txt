@@ -1,0 +1,1 @@
+// In CricketMoneyDB using script, initialize all the rows wit initial odds (matchId shouldn't be exhausted)
