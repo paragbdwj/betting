@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRICKET_MONEY;
 
 /*
@@ -50,4 +52,10 @@ public class CricketMoney {
 
     @Column(name = "wicket_money")
     private double wicketMoney;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

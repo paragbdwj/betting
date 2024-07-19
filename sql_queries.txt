@@ -1,14 +1,13 @@
 data_base name :- betting
 
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) DEFAULT NULL,
-    password VARCHAR(255) DEFAULT NULL,
-    name VARCHAR(30) DEFAULT NULL,
-    phone_number VARCHAR(15) DEFAULT NULL,
-    email VARCHAR(100) DEFAULT NULL,
-    is_valid BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    is_first_time_user BOOLEAN DEFAULT TRUE
+CREATE TABLE CricketMatches (
+    match_id INT PRIMARY KEY,
+    team_one VARCHAR(255),
+    team_two VARCHAR(255),
+    team_one_score VARCHAR(255),
+    team_two_score VARCHAR(255),
+    url VARCHAR(255),
+    is_live_match BOOLEAN
 );
+
+

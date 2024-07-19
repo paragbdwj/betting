@@ -14,6 +14,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRICKET_MATCHES;
 
 @Data
@@ -46,4 +48,10 @@ public class CricketMatches {
 
     @Column(name = "is_live_match")
     private boolean isLiveMatch;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }
