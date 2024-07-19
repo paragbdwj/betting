@@ -1,9 +1,9 @@
 1) LoginController :-
 
 a)
-curl -X POST http://localhost:8000/is-verified-user \
+curl -X POST http://localhost:8080/is-verified-user \
      -H "Content-Type: application/json" \
      -d '{
-           "userName": "exampleUser",
+           "user_name": "exampleUser",
            "password": "examplePassword"
          }'

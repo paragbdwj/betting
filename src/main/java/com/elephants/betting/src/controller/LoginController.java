@@ -9,6 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.LoginAPIs.IS_VERIFIED_USER_API;
@@ -27,7 +28,7 @@ public class LoginController {
     @PostMapping(value = IS_VERIFIED_USER_API,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LoginVerifyUserResponse> isVerifiedUser(LoginUserRequest request) {
+    public ResponseEntity<LoginVerifyUserResponse> isVerifiedUser(@RequestBody LoginUserRequest request) {
         //set default response accordingly
         LoginVerifyUserResponse isFirstTimeUser = LoginVerifyUserResponse.builder()
                 .isValidUser(false)
