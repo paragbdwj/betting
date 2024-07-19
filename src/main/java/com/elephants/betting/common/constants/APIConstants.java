@@ -8,7 +8,7 @@ public class APIConstants {
 
     @UtilityClass
     public static class LoginAPIs {
-        public static final String IS_FIRST_TIME_USER_API = "/is-first-time-user";
+        public static final String IS_VERIFIED_USER_API = "/is-verified-user";
     }
     @UtilityClass
     public static class UserAPIs {

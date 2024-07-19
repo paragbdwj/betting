@@ -1,0 +1,9 @@
+1) LoginController :-
+
+a)
+curl -X POST http://localhost:8000/is-verified-user \
+     -H "Content-Type: application/json" \
+     -d '{
+           "userName": "exampleUser",
+           "password": "examplePassword"
+         }'
