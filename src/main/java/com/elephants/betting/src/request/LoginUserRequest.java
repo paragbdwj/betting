@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(SnakeCaseStrategy.class)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IsFirstTimeUserRequest {
+public class LoginUserRequest {
     private String userName;
     private String password;
 }

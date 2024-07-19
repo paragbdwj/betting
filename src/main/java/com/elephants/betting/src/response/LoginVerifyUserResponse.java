@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(SnakeCaseStrategy.class)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class IsFirstTimeUserResponse {
+public class LoginVerifyUserResponse {
 //    private boolean isFirstTimeUser; // not necessary to build in MVP
     private boolean isValidUser;
     private Integer userId;

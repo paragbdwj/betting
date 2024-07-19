@@ -1,7 +1,7 @@
 package com.elephants.betting.src.controller;
 
-import com.elephants.betting.src.request.IsFirstTimeUserRequest;
-import com.elephants.betting.src.response.IsFirstTimeUserResponse;
+import com.elephants.betting.src.request.LoginUserRequest;
+import com.elephants.betting.src.response.LoginVerifyUserResponse;
 import com.elephants.betting.src.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +27,17 @@ public class LoginController {
     @PostMapping(value = IS_FIRST_TIME_USER_API,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<IsFirstTimeUserResponse> isFirstTimeUser(IsFirstTimeUserRequest request) {
+    public ResponseEntity<LoginVerifyUserResponse> isVerifiedUser(LoginUserRequest request) {
         //set default response accordingly
-        IsFirstTimeUserResponse isFirstTimeUser = IsFirstTimeUserResponse.builder()
+        LoginVerifyUserResponse isFirstTimeUser = LoginVerifyUserResponse.builder()
                 .isValidUser(false)
                 .build();
         try {
-            isFirstTimeUser = loginService.isFirstTimeUser(request);
+            isFirstTimeUser = loginService.loginVerifyUser(request);
         } catch (Exception e) {
             log.error(EXCEPTION_LOG, IS_FIRST_TIME_USER_API, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(isFirstTimeUser);
     }
-
-
 
 }
