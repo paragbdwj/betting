@@ -1,6 +1,6 @@
-data_base name :- betting
+use betting;
 
-CREATE TABLE User (
+CREATE TABLE users (
     id INT PRIMARY KEY,
     username VARCHAR(255),
     password VARCHAR(255),
@@ -12,7 +12,7 @@ CREATE TABLE User (
     onboarder_name VARCHAR(255)
 );
 
-CREATE TABLE Payout (
+CREATE TABLE payout (
     id INT PRIMARY KEY,
     user_id INT,
     total_amount DOUBLE DEFAULT 0.0,
@@ -20,7 +20,7 @@ CREATE TABLE Payout (
     updated_at TIMESTAMP
 );
 
-CREATE TABLE CricketMoney (
+CREATE TABLE cricket_money (
     id INT PRIMARY KEY,
     match_id INT,
     run_zero_money DOUBLE,
@@ -36,7 +36,7 @@ CREATE TABLE CricketMoney (
 );
 
 
-CREATE TABLE CricketMatches (
+CREATE TABLE cricket_matches (
     match_id INT PRIMARY KEY,
     team_one VARCHAR(255),
     team_two VARCHAR(255),
