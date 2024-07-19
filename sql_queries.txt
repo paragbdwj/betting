@@ -1,5 +1,41 @@
 data_base name :- betting
 
+CREATE TABLE User (
+    id INT PRIMARY KEY,
+    username VARCHAR(255),
+    password VARCHAR(255),
+    phone_number VARCHAR(255),
+    email VARCHAR(100),
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
+    is_valid BOOLEAN,
+    onboarder_name VARCHAR(255)
+);
+
+CREATE TABLE Payout (
+    id INT PRIMARY KEY,
+    user_id INT,
+    total_amount DOUBLE DEFAULT 0.0,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE TABLE CricketMoney (
+    id INT PRIMARY KEY,
+    match_id INT,
+    run_zero_money DOUBLE,
+    run_one_money DOUBLE,
+    run_two_money DOUBLE,
+    run_three_money DOUBLE,
+    run_four_money DOUBLE,
+    run_five_money DOUBLE,
+    run_six_money DOUBLE,
+    wicket_money DOUBLE,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+
 CREATE TABLE CricketMatches (
     match_id INT PRIMARY KEY,
     team_one VARCHAR(255),
@@ -7,7 +43,8 @@ CREATE TABLE CricketMatches (
     team_one_score VARCHAR(255),
     team_two_score VARCHAR(255),
     url VARCHAR(255),
-    is_live_match BOOLEAN
+    is_live_match BOOLEAN,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 );
-
 
