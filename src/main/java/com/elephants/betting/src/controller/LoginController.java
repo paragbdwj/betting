@@ -30,15 +30,15 @@ public class LoginController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginVerifyUserResponse> isVerifiedUser(@RequestBody LoginUserRequest request) {
         //set default response accordingly
-        LoginVerifyUserResponse isFirstTimeUser = LoginVerifyUserResponse.builder()
+        LoginVerifyUserResponse isVerifiedUser = LoginVerifyUserResponse.builder()
                 .isValidUser(false)
                 .build();
         try {
-            isFirstTimeUser = loginService.loginVerifyUser(request);
+            isVerifiedUser = loginService.loginVerifyUser(request);
         } catch (Exception e) {
             log.error(EXCEPTION_LOG, IS_VERIFIED_USER_API, ExceptionUtils.getStackTrace(e));
         }
-        return ResponseEntity.status(200).body(isFirstTimeUser);
+        return ResponseEntity.status(200).body(isVerifiedUser);
     }
 
 }

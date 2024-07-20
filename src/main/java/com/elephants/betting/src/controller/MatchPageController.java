@@ -9,6 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.PageAPIs.GET_MATCH_PAGE;
@@ -23,7 +24,7 @@ public class MatchPageController {
     @PostMapping(value = GET_MATCH_PAGE,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MatchPageResponse> getMatchPage(MatchPageRequest request) {
+    public ResponseEntity<MatchPageResponse> getMatchPage(@RequestBody MatchPageRequest request) {
         MatchPageResponse matchPageResponse = null;
         try {
             matchPageResponse = matchPageService.getMatchPage(request);

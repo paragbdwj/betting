@@ -11,6 +11,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.OddsAPIs.GIVE_ODDS;
@@ -26,7 +27,7 @@ public class OddsController {
     @PostMapping(value = GIVE_ODDS,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GiveOddsResponse> giveOdds(GiveOddsRequest request) {
+    public ResponseEntity<GiveOddsResponse> giveOdds(@RequestBody GiveOddsRequest request) {
         GiveOddsResponse giveOddsResponse = null;
         try {
             giveOddsResponse = oddsService.giveOdds(request);
@@ -39,7 +40,7 @@ public class OddsController {
     @PostMapping(value = UPDATE_ODDS,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdateOddsResponse> updateOdds(UpdateOddsRequest request) {
+    public ResponseEntity<UpdateOddsResponse> updateOdds(@RequestBody UpdateOddsRequest request) {
         UpdateOddsResponse updateOddsResponse = null;
         try {
             updateOddsResponse = oddsService.updateOdds(request);

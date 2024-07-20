@@ -9,6 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.UserAPIs.UPDATE_USER;
@@ -26,7 +27,7 @@ public class UserController {
     @PostMapping(value = UPDATE_USER,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdateUserResponse> updateUser(UpdateUserRequest request) {
+    public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody UpdateUserRequest request) {
         // set default response to false
         UpdateUserResponse updateUserResponse = UpdateUserResponse.builder()
                 .success(false)

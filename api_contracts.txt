@@ -7,3 +7,17 @@ curl -X POST http://localhost:8080/is-verified-user \
            "user_name": "exampleUser",
            "password": "examplePassword"
          }'
+
+2) AdminController :-
+
+a)
+curl -X POST http://localhost:8080/user/onboard \
+     -H "Content-Type: application/json" \
+     -d '{
+           "phone_number": "1234567890",
+           "onboarder_name": "exampleOnboarder",
+           "name": "exampleName",
+           "email": "example@example.com",
+           "money": 100.0
+         }'
+

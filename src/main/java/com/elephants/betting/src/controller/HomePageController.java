@@ -9,6 +9,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.PageAPIs.GET_HOME_PAGE;
@@ -27,7 +28,7 @@ public class HomePageController {
     @PostMapping(value = GET_HOME_PAGE,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HomePageResponse> getHomePage(HomePageRequest request) {
+    public ResponseEntity<HomePageResponse> getHomePage(@RequestBody HomePageRequest request) {
         HomePageResponse homePageResponse = null;
         try {
             homePageResponse = homePageService.getHomePage(request);

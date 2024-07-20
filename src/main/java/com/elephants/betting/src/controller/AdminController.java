@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.ONBOARD_NEW_USER;
@@ -27,7 +28,7 @@ public class AdminController {
     @PostMapping(value = ONBOARD_NEW_USER,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OnboardNewUserResponse> onboardNewUser(OnboardNewUserRequest request) {
+    public ResponseEntity<OnboardNewUserResponse> onboardNewUser(@RequestBody OnboardNewUserRequest request) {
         OnboardNewUserResponse response = OnboardNewUserResponse.builder()
                 .success(false)
                 .build();
@@ -42,7 +43,7 @@ public class AdminController {
     @PostMapping(value = UPDATE_USER_DETAILS,
         produces = MediaType.APPLICATION_JSON_VALUE,
         consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdateUserDetailsResponse> updateUserDetails(UpdateUserDetailsRequest request) {
+    public ResponseEntity<UpdateUserDetailsResponse> updateUserDetails(@RequestBody UpdateUserDetailsRequest request) {
         UpdateUserDetailsResponse response = UpdateUserDetailsResponse.builder()
                 .success(false)
                 .build();
