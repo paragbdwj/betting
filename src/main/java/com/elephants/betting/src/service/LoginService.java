@@ -18,14 +18,14 @@ public class LoginService {
     public LoginVerifyUserResponse loginVerifyUser(LoginUserRequest request) {
         // considering userName to be unique (check this in DB itself)
         Optional<User> user = databaseHelper.getUserByUserName(request.getUserName());
-        if(user.isEmpty()) {
+        if(user.isEmpty() || !user.get().getIsValid() || !user.get().getPassword().equals(request.getPassword())) {
             return LoginVerifyUserResponse.builder()
                     .isValidUser(false)
                     .userId(null)
                     .build();
         }
         return LoginVerifyUserResponse.builder()
-                .isValidUser(user.get().getIsValid())
+                .isValidUser(true)
                 .userId(user.get().getId())
                 .build();
     }
