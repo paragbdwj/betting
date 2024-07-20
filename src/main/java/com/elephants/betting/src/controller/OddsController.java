@@ -32,7 +32,7 @@ public class OddsController {
         try {
             giveOddsResponse = oddsService.giveOdds(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, GIVE_ODDS, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, GIVE_ODDS, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(giveOddsResponse);
     }
@@ -45,7 +45,7 @@ public class OddsController {
         try {
             updateOddsResponse = oddsService.updateOdds(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, UPDATE_ODDS, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, UPDATE_ODDS, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(updateOddsResponse);
     }

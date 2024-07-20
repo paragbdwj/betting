@@ -8,6 +8,7 @@ import com.elephants.betting.src.service.OnboardNewUserService;
 import com.elephants.betting.src.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class AdminController {
         try {
             response = onboardNewUserService.onboardNewUser(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, ONBOARD_NEW_USER, request);
+            log.error(EXCEPTION_LOG, ONBOARD_NEW_USER, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(response);
     }
@@ -50,7 +51,7 @@ public class AdminController {
         try {
             response = userService.updateUserDetails(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, UPDATE_USER_DETAILS, request);
+            log.error(EXCEPTION_LOG, UPDATE_USER_DETAILS, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(response);
     }

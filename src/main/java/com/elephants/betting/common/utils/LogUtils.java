@@ -6,6 +6,6 @@ import lombok.experimental.UtilityClass;
 public class LogUtils {
     @UtilityClass
     public static class ErrorLogUtils {
-        public static String EXCEPTION_LOG = "got exception in : {} with stack_trace : {}";
+        public static String EXCEPTION_LOG = "got exception in : {} for request : {} with stack_trace : {}";
     }
 }

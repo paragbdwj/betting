@@ -33,7 +33,7 @@ public class HomePageController {
         try {
             homePageResponse = homePageService.getHomePage(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, GET_HOME_PAGE, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, GET_HOME_PAGE, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(homePageResponse);
     }

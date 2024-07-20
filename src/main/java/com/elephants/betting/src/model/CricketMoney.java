@@ -2,6 +2,8 @@ package com.elephants.betting.src.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ This will give money instead of odds, from this we can calculate odds for respec
 @Table(name = CRICKET_MONEY)
 public class CricketMoney {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "match_id")

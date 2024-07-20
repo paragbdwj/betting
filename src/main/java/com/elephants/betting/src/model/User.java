@@ -23,6 +23,7 @@ import static com.elephants.betting.common.constants.SQLConstants.TableNames.USE
 @Table(name = USERS)
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String username;

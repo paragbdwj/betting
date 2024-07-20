@@ -28,6 +28,7 @@ import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRI
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CricketMatches {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "match_id")
     private int matchId;
 

@@ -23,6 +23,7 @@ import static com.elephants.betting.common.constants.SQLConstants.TableNames.PAY
 @Table(name = PAYOUT)
 public class Payout {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "user_id")

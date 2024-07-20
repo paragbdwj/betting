@@ -35,7 +35,7 @@ public class UserController {
         try {
             updateUserResponse = userService.updateUser(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, UPDATE_USER, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, UPDATE_USER, request, ExceptionUtils.getStackTrace(e));
 
         }
         return ResponseEntity.status(200).body(updateUserResponse);

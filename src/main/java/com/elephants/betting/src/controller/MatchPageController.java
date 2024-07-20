@@ -29,7 +29,7 @@ public class MatchPageController {
         try {
             matchPageResponse = matchPageService.getMatchPage(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, GET_MATCH_PAGE, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, GET_MATCH_PAGE, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(matchPageResponse);
     }

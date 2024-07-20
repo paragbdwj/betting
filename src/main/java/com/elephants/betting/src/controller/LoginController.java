@@ -36,7 +36,7 @@ public class LoginController {
         try {
             isVerifiedUser = loginService.loginVerifyUser(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, IS_VERIFIED_USER_API, ExceptionUtils.getStackTrace(e));
+            log.error(EXCEPTION_LOG, IS_VERIFIED_USER_API, request, ExceptionUtils.getStackTrace(e));
         }
         return ResponseEntity.status(200).body(isVerifiedUser);
     }
