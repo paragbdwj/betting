@@ -21,7 +21,17 @@ CREATE TABLE payout (
   FOREIGN KEY (user_id) REFERENCES users(id)  -- Foreign key relationship with users table
 );
 
-
+CREATE TABLE cricket_matches (
+  match_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,  -- Auto-incrementing primary key
+  team_one VARCHAR(255) NOT NULL,
+  team_two VARCHAR(255) NOT NULL,
+  team_one_score VARCHAR(255),
+  team_two_score VARCHAR(255),
+  url VARCHAR(255),
+  is_live_match BOOLEAN NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Set on insert
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Set on insert and update
+);
 
 CREATE TABLE cricket_money (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,  -- Auto-incrementing primary key
@@ -37,19 +47,5 @@ CREATE TABLE cricket_money (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Set on insert
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Set on insert and update
   FOREIGN KEY (match_id) REFERENCES cricket_matches(match_id)  -- Foreign key relationship with cricket_matches table
-);
-
-
-
-CREATE TABLE cricket_matches (
-  match_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,  -- Auto-incrementing primary key
-  team_one VARCHAR(255) NOT NULL,
-  team_two VARCHAR(255) NOT NULL,
-  team_one_score VARCHAR(255),
-  team_two_score VARCHAR(255),
-  url VARCHAR(255),
-  is_live_match BOOLEAN NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Set on insert
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Set on insert and update
 );
 
