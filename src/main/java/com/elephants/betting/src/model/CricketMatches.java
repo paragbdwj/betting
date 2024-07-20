@@ -3,6 +3,8 @@ package com.elephants.betting.src.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,6 +28,7 @@ import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRI
 @Table(name = CRICKET_MATCHES)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(SnakeCaseStrategy.class)
 public class CricketMatches {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
