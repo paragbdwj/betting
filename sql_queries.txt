@@ -1,3 +1,4 @@
+//TODO : revisite indexes
 use betting;
 
 CREATE TABLE users (

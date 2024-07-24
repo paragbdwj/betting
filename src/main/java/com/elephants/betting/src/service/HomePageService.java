@@ -1,7 +1,6 @@
 package com.elephants.betting.src.service;
 
 import com.elephants.betting.src.exception.PayoutNotFoundException;
-import com.elephants.betting.src.exception.UserNotFoundException;
 import com.elephants.betting.src.model.CricketMatches;
 import com.elephants.betting.src.model.CricketMoney;
 import com.elephants.betting.src.model.Payout;
@@ -18,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -33,8 +34,8 @@ public class HomePageService {
     public HomePageResponse getHomePage(HomePageRequest request) throws PayoutNotFoundException, IOException {
         Payout payout = getPayoutDetails(request);
         User userDetails = getUserDetails(request);
-        CricExchangeResponse cricketDetailsPojo = cricketExchangeService.getCricExchangeResponse(new CricExchangeRequest());
-        List<CricketMatches> matches = saveDetailsInDB(cricketDetailsPojo);
+        CricExchangeResponse cricExchangeResponse = cricketExchangeService.getCricExchangeResponse(new CricExchangeRequest());
+        List<CricketMatches> matches = saveDetailsInDB(cricExchangeResponse);
         CompletableFuture.runAsync(() -> saveInCricketMoneyDb(matches));
         return createHomePageResponse(payout, userDetails, matches);
     }
@@ -60,9 +61,24 @@ public class HomePageService {
                 .toList();
     }
 
-    private List<CricketMatches> saveDetailsInDB(CricExchangeResponse cricketDetailsPojo) {
-        // TODO : ensure uniqueness of the matchId
-        return databaseHelper.saveAllCricketMatches(getCricketMatchesList(cricketDetailsPojo.getMatches()));
+    private List<CricketMatches> saveDetailsInDB(CricExchangeResponse cricExchangeResponse) {
+        List<CricketMatches> cricketMatchesList = getCricketMatchesList(cricExchangeResponse.getMatches());
+        List<CricketMatches> getExistingCricketMatches = databaseHelper.getCricketMatchesListByUrls(cricketMatchesList.stream().map(CricketMatches::getUrl).toList());
+        Map<String, CricketMatches> urlToCricketMatchesMap = createUrlToCricketMatchesMap(getExistingCricketMatches);
+        for(CricketMatches cricketMatches : cricketMatchesList) {
+            if(urlToCricketMatchesMap.containsKey(cricketMatches.getUrl())) {
+                cricketMatches.setMatchId(urlToCricketMatchesMap.get(cricketMatches.getUrl()).getMatchId());
+            }
+        }
+        return databaseHelper.saveAllCricketMatches(cricketMatchesList);
+    }
+
+    private Map<String, CricketMatches> createUrlToCricketMatchesMap(List<CricketMatches> cricketMatchesList) {
+        Map<String, CricketMatches> urlToCricketMatchesMap = new HashMap<>();
+        for(CricketMatches cricketMatches : cricketMatchesList) {
+            urlToCricketMatchesMap.put(cricketMatches.getUrl(), cricketMatches);
+        }
+        return urlToCricketMatchesMap;
     }
 
     private List<CricketMatches> getCricketMatchesList(List<CricExchangeAttributes> matches) {

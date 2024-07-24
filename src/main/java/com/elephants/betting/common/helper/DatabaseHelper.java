@@ -115,4 +115,8 @@ public class DatabaseHelper {
     public List<CricketMoney> saveAllCricketMoneies(List<CricketMoney> cricketMoneyList) {
         return cricketMoneyRepository.saveAll(cricketMoneyList);
     }
+
+    public List<CricketMatches> getCricketMatchesListByUrls(List<String> urls) {
+        return cricketMatchesRepository.findAllByUrlIn(urls);
+    }
 }
