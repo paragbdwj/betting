@@ -42,7 +42,22 @@ public class HomePageService {
 
     private void saveInCricketMoneyDb(List<CricketMatches> matches) {
         List<CricketMoney> cricketMoneyList = getCricketMoneyList(matches);
+        List<CricketMoney> existingCricketMoneyList = databaseHelper.getAllCricketMoneyByMatchIdList(cricketMoneyList.stream().map(CricketMoney::getMatchId).toList());
+        Map<Integer, CricketMoney> matchIdToCricketMoneyMap = createMatchIdToCricketMoneyMap(existingCricketMoneyList);
+        for(CricketMoney cricketMoney : cricketMoneyList) {
+            if(matchIdToCricketMoneyMap.containsKey(cricketMoney.getMatchId())) {
+                cricketMoney.setId(matchIdToCricketMoneyMap.get(cricketMoney.getMatchId()).getId());
+            }
+        }
         databaseHelper.saveAllCricketMoneies(cricketMoneyList);
+    }
+
+    private Map<Integer, CricketMoney> createMatchIdToCricketMoneyMap(List<CricketMoney> existingCricketMoneyList) {
+        Map<Integer, CricketMoney> matchIdToCricketMoneyMap = new HashMap<>();
+        for(CricketMoney cricketMoney : existingCricketMoneyList) {
+            matchIdToCricketMoneyMap.put(cricketMoney.getMatchId(), cricketMoney);
+        }
+        return matchIdToCricketMoneyMap;
     }
 
     private List<CricketMoney> getCricketMoneyList(List<CricketMatches> matches) {
@@ -92,6 +107,8 @@ public class HomePageService {
                                 .teamTwo(cricExchangeAttributes.getTeamTwo())
                                 .teamOneScore(cricExchangeAttributes.getTeamOneScore())
                                 .teamTwoScore(cricExchangeAttributes.getTeamTwoScore())
+                                .teamOneOvers(cricExchangeAttributes.getTeamOneOvers())
+                                .teamTwoOvers(cricExchangeAttributes.getTeamTwoOvers())
                                 .build()).toList();
     }
 

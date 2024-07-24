@@ -34,6 +34,9 @@ CREATE TABLE cricket_matches (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Set on insert and update
 );
 
+ALTER TABLE cricket_matches ADD COLUMN team_one_overs VARCHAR(255);
+ALTER TABLE cricket_matches ADD COLUMN team_two_overs VARCHAR(255);
+
 CREATE TABLE cricket_money (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,  -- Auto-incrementing primary key
   match_id INT NOT NULL,

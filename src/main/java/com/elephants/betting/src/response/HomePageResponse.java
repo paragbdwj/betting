@@ -1,8 +1,6 @@
 package com.elephants.betting.src.response;
 
 import com.elephants.betting.src.model.CricketMatches;
-import com.elephants.betting.src.pojo.CricketMatchAttributes;
-import com.elephants.betting.src.response.CricExchangeResponse.CricExchangeAttributes;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;

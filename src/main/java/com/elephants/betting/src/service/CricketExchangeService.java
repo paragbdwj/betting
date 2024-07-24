@@ -65,6 +65,9 @@ public class CricketExchangeService {
 
         String teamOne = Objects.requireNonNull(teamScores.get(0).select("span").first()).text();
         String teamTwo = Objects.requireNonNull(teamScores.get(1).select("span").first()).text();
+        String teamOneOvers = teamScores.get(0).select("span.match-over").text();
+        String teamTwoOvers = teamScores.get(1).select("span").get(3).text();
+
 
         // key is href value as it is going to be unique
         cricExchangeAttributesMap.put(CRIC_EXCHANGE_API_URL + liveScoreHref, CricExchangeAttributes.builder()
@@ -72,8 +75,10 @@ public class CricketExchangeService {
                 .isLiveMatch(!teamScores.get(0).select("sup").isEmpty())
                 .teamOne(teamOne)
                 .teamTwo(teamTwo)
-                .teamOneScore(teamScores.get(0).select(".match-score").text())
-                .teamTwoScore(teamScores.get(1).select(".match-score").text())
+                .teamOneOvers(teamOneOvers)
+                .teamTwoOvers(teamTwoOvers)
+                .teamOneScore(teamScores.get(0).select("span").get(2).text())
+                .teamTwoScore(teamScores.get(1).select("span").get(2).text())
                 .build());
     }
 

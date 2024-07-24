@@ -47,6 +47,12 @@ public class CricketMatches {
     @Column(name = "team_two_score")
     private String teamTwoScore;
 
+    @Column(name = "team_one_overs")
+    private String teamOneOvers;
+
+    @Column(name = "team_two_overs")
+    private String teamTwoOvers;
+
     @Column(name = "url")
     private String url;
 

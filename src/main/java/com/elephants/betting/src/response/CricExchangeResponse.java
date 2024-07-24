@@ -35,5 +35,7 @@ public class CricExchangeResponse {
         private String teamTwoScore;
         private String url;          // this will be the url that we have to hit in order to get the scores, it will act as a unique id
         private boolean isLiveMatch;
+        private String teamOneOvers;
+        private String teamTwoOvers;
     }
 }
