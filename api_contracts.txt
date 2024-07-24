@@ -27,3 +27,13 @@ curl -X POST http://localhost:8080/homepage/get \
      -d '{
            "user_id": 1
          }'
+
+4) UpdateOddsApi :-
+curl --location 'http://localhost:8080/update/odds' \
+--header 'Content-Type: application/json' \
+--data '{
+    "user_id" : 2,
+    "match_id" : 11645,
+    "user_money" : 100,
+    "state_name" : "ball_score_two"
+}'
