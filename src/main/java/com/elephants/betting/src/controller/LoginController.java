@@ -31,15 +31,17 @@ public class LoginController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<LoginVerifyUserResponse> isVerifiedUser(@RequestBody LoginUserRequest request) {
         //set default response accordingly
-        LoginVerifyUserResponse isVerifiedUser = LoginVerifyUserResponse.builder()
+        LoginVerifyUserResponse loginVerifyUserResponse = LoginVerifyUserResponse.builder()
                 .isValidUser(false)
                 .build();
         try {
-            isVerifiedUser = loginService.loginVerifyUser(request);
+            LogUtils.getRequestLog(IS_VERIFIED_USER_API, request);
+            loginVerifyUserResponse = loginService.loginVerifyUser(request);
+            LogUtils.getResponseLog(IS_VERIFIED_USER_API, loginVerifyUserResponse);
         } catch (Exception e) {
             LogUtils.getExceptionLog(IS_VERIFIED_USER_API, request, e);
         }
-        return ResponseEntity.status(200).body(isVerifiedUser);
+        return ResponseEntity.status(200).body(loginVerifyUserResponse);
     }
 
 }

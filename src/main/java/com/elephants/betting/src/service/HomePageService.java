@@ -3,6 +3,7 @@ package com.elephants.betting.src.service;
 import com.elephants.betting.src.exception.PayoutNotFoundException;
 import com.elephants.betting.src.exception.UserNotFoundException;
 import com.elephants.betting.src.model.CricketMatches;
+import com.elephants.betting.src.model.CricketMoney;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
 import com.elephants.betting.src.request.CricExchangeRequest;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +35,33 @@ public class HomePageService {
         User userDetails = getUserDetails(request);
         CricExchangeResponse cricketDetailsPojo = cricketExchangeService.getCricExchangeResponse(new CricExchangeRequest());
         List<CricketMatches> matches = saveDetailsInDB(cricketDetailsPojo);
+        CompletableFuture.runAsync(() -> saveInCricketMoneyDb(matches));
         return createHomePageResponse(payout, userDetails, matches);
     }
 
+    private void saveInCricketMoneyDb(List<CricketMatches> matches) {
+        List<CricketMoney> cricketMoneyList = getCricketMoneyList(matches);
+        databaseHelper.saveAllCricketMoneies(cricketMoneyList);
+    }
+
+    private List<CricketMoney> getCricketMoneyList(List<CricketMatches> matches) {
+        return matches.stream()
+                .map(match -> CricketMoney.builder()
+                        .matchId(match.getMatchId())
+                        .wicketMoney(1.0)
+                        .runZeroMoney(1.0)
+                        .runOneMoney(1.0)
+                        .runTwoMoney(1.0)
+                        .runThreeMoney(1.0)
+                        .runFourMoney(1.0)
+                        .runFiveMoney(1.0)
+                        .runSixMoney(1.0)
+                        .build())
+                .toList();
+    }
+
     private List<CricketMatches> saveDetailsInDB(CricExchangeResponse cricketDetailsPojo) {
+        // TODO : ensure uniqueness of the matchId
         return databaseHelper.saveAllCricketMatches(getCricketMatchesList(cricketDetailsPojo.getMatches()));
     }
 

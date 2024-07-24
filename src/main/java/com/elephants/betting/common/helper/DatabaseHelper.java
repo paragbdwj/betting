@@ -87,17 +87,17 @@ public class DatabaseHelper {
         } else if(StateName.BALL_SCORE_ZERO.getStateName().equalsIgnoreCase(stateName)) {
             cricketMoney.setRunZeroMoney(updateMoney(cricketMoney.getRunZeroMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_ONE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunOneMoney(), isAddition, userMoney));
+            cricketMoney.setRunOneMoney(updateMoney(cricketMoney.getRunOneMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_TWO.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunTwoMoney(), isAddition, userMoney));
+            cricketMoney.setRunTwoMoney(updateMoney(cricketMoney.getRunTwoMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_THREE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunThreeMoney(), isAddition, userMoney));
+            cricketMoney.setRunThreeMoney(updateMoney(cricketMoney.getRunThreeMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_FOUR.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunFourMoney(), isAddition, userMoney));
+            cricketMoney.setRunFourMoney(updateMoney(cricketMoney.getRunFourMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_FIVE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunFiveMoney(), isAddition, userMoney));
+            cricketMoney.setRunFiveMoney(updateMoney(cricketMoney.getRunFiveMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_SIX.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getRunSixMoney(), isAddition, userMoney));
+            cricketMoney.setRunSixMoney(updateMoney(cricketMoney.getRunSixMoney(), isAddition, userMoney));
         }
         return saveCricketMoney(cricketMoney);
     }
@@ -110,5 +110,9 @@ public class DatabaseHelper {
 
     private Double updateMoney(double totalAmount, boolean isAddition, double money) {
         return totalAmount + (isAddition? money: -money);
+    }
+
+    public List<CricketMoney> saveAllCricketMoneies(List<CricketMoney> cricketMoneyList) {
+        return cricketMoneyRepository.saveAll(cricketMoneyList);
     }
 }

@@ -32,7 +32,9 @@ public class UserController {
                 .success(false)
                 .build();
         try {
+            LogUtils.getRequestLog(UPDATE_USER, request);
             updateUserResponse = userService.updateUser(request);
+            LogUtils.getResponseLog(UPDATE_USER, updateUserResponse);
         } catch (Exception e) {
             LogUtils.getExceptionLog(UPDATE_USER, request, e);
 

@@ -1,3 +1,4 @@
+com/elephants/betting/src/model/BaseEntity.class
 com/elephants/betting/common/constants/APIConstants$LoginAPIs.class
 com/elephants/betting/src/response/GiveOddsResponse$GiveOddsResponseBuilder.class
 com/elephants/betting/common/constants/APIConstants$UserAPIs.class
@@ -15,6 +16,7 @@ com/elephants/betting/src/pojo/CustomState.class
 com/elephants/betting/src/model/User$UserBuilder.class
 com/elephants/betting/src/service/HomePageService.class
 com/elephants/betting/common/constants/ApplicationProperties.class
+com/elephants/betting/common/config/WebSocketConfig.class
 com/elephants/betting/common/constants/BeanNames.class
 com/elephants/betting/src/controller/MatchPageController.class
 com/elephants/betting/src/response/MatchResultResponse.class
@@ -24,6 +26,7 @@ com/elephants/betting/src/request/MatchPageRequest.class
 com/elephants/betting/src/repository/CricketMoneyRepository.class
 com/elephants/betting/src/model/Payout.class
 com/elephants/betting/common/constants/APIConstants$OddsAPIs.class
+com/elephants/betting/common/filter/WebConfig.class
 com/elephants/betting/src/model/CricketMatches$CricketMatchesBuilder.class
 com/elephants/betting/common/config/HttpPoolConfig.class
 com/elephants/betting/common/constants/VarConstants.class
@@ -33,9 +36,9 @@ com/elephants/betting/src/config/RestTemplateConfig.class
 com/elephants/betting/src/request/GiveOddsRequest$GiveOddsRequestBuilder.class
 com/elephants/betting/src/response/HomePageResponse$HomePageResponseBuilder.class
 com/elephants/betting/common/config/HttpPoolProperties.class
+com/elephants/betting/src/exception/CricketMatchesNotFoundException.class
 com/elephants/betting/src/request/UpdateUserRequest$UpdateUserRequestBuilder.class
 com/elephants/betting/src/request/UpdateUserRequest.class
-com/elephants/betting/common/utils/LogUtils$ErrorLogUtils.class
 com/elephants/betting/src/response/OnboardNewUserResponse$OnboardNewUserResponseBuilder.class
 com/elephants/betting/src/exception/CricketOddsNotFoundException.class
 com/elephants/betting/src/controller/OddsController.class
@@ -47,6 +50,7 @@ com/elephants/betting/src/request/MatchResultRequest$MatchResultRequestBuilder.c
 com/elephants/betting/src/controller/PayoutController.class
 com/elephants/betting/common/constants/APIConstants.class
 com/elephants/betting/src/model/CricketMatches.class
+com/elephants/betting/src/request/LoginUserRequest$LoginUserRequestBuilder.class
 com/elephants/betting/src/controller/TestController.class
 com/elephants/betting/src/response/UpdateUserResponse.class
 com/elephants/betting/common/constants/APIConstants$ThirdPartyAPIs.class
@@ -59,6 +63,7 @@ com/elephants/betting/src/pojo/CricketDetailsPojo$CricketDetailsPojoBuilder.clas
 com/elephants/betting/src/controller/AdminController.class
 com/elephants/betting/src/request/CricExchangeRequest.class
 com/elephants/betting/src/response/UpdateOddsResponse$UpdateOddsResponseBuilder.class
+com/elephants/betting/src/controller/websockets/OddsWebSocketHandler.class
 com/elephants/betting/src/request/UpdateOddsRequest.class
 com/elephants/betting/BettingApplication.class
 com/elephants/betting/common/constants/APIConstants$PageAPIs.class
@@ -71,6 +76,8 @@ com/elephants/betting/src/pojo/CustomState$CustomStateBuilder.class
 com/elephants/betting/src/controller/HomePageController.class
 com/elephants/betting/src/repository/PayoutRepository.class
 com/elephants/betting/src/response/UpdateUserResponse$UpdateUserResponseBuilder.class
+com/elephants/betting/src/response/LoginVerifyUserResponse$LoginVerifyUserResponseBuilder.class
+com/elephants/betting/src/response/LoginVerifyUserResponse.class
 com/elephants/betting/common/constants/APIConstants$AdminAPIs.class
 com/elephants/betting/src/service/OddsService.class
 com/elephants/betting/src/service/CricketStatsFetchService.class
@@ -84,8 +91,6 @@ com/elephants/betting/src/pojo/CricketMatchAttributes$CricketMatchAttributesBuil
 com/elephants/betting/src/request/UpdateUserDetailsRequest$UpdateUserDetailsRequestBuilder.class
 com/elephants/betting/src/service/LoginService.class
 com/elephants/betting/src/exception/UserNotFoundException.class
-com/elephants/betting/src/response/IsFirstTimeUserResponse.class
-com/elephants/betting/src/request/IsFirstTimeUserRequest.class
 com/elephants/betting/src/request/MatchPageRequest$MatchPageRequestBuilder.class
 com/elephants/betting/src/pojo/CricketMatchAttributes.class
 com/elephants/betting/src/response/HomePageResponse$UserData$UserDataBuilder.class
@@ -96,8 +101,7 @@ com/elephants/betting/src/response/CricExchangeResponse$CricExchangeAttributes.c
 com/elephants/betting/src/service/CricketExchangeService.class
 com/elephants/betting/common/helper/DatabaseHelper.class
 com/elephants/betting/src/response/GiveOddsResponse.class
-com/elephants/betting/src/request/IsFirstTimeUserRequest$IsFirstTimeUserRequestBuilder.class
-com/elephants/betting/src/response/IsFirstTimeUserResponse$IsFirstTimeUserResponseBuilder.class
 com/elephants/betting/src/controller/LoginController.class
 com/elephants/betting/src/model/Payout$PayoutBuilder.class
+com/elephants/betting/src/request/LoginUserRequest.class
 com/elephants/betting/src/pojo/CricketDetailsPojo.class

@@ -34,6 +34,7 @@ public class OddsService {
         return GiveOddsResponse.builder()
                 .runZeroOdds(totalMoneyAfterCut/cricketMoney.getRunZeroMoney())
                 .runOneOdds(totalMoneyAfterCut/cricketMoney.getRunOneMoney())
+                .runTwoOdds(totalMoneyAfterCut/cricketMoney.getRunTwoMoney())
                 .runThreeOdds(totalMoneyAfterCut/cricketMoney.getRunThreeMoney())
                 .runFourOdds(totalMoneyAfterCut/cricketMoney.getRunFourMoney())
                 .runFiveOdds(totalMoneyAfterCut/cricketMoney.getRunFiveMoney())
@@ -55,7 +56,7 @@ public class OddsService {
 
     public UpdateOddsResponse updateOdds(UpdateOddsRequest request) {
         Payout payout = databaseHelper.updateMoneyInPayout(false, request.getUserId(), request.getUserMoney());
-        CricketMoney cricketMoney = databaseHelper.updateOddMoneyInDatabaseBasisStateName(false, request.getMatchId(), request.getStateName(), request.getUserMoney());
+        CricketMoney cricketMoney = databaseHelper.updateOddMoneyInDatabaseBasisStateName(true, request.getMatchId(), request.getStateName(), request.getUserMoney());
         return UpdateOddsResponse.builder()
                 .oddsResponse(calculateOddsBasisMoney(cricketMoney))
                 .userMoney(payout.getTotalAmount())

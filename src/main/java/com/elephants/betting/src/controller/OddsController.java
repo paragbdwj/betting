@@ -29,7 +29,9 @@ public class OddsController {
     public ResponseEntity<GiveOddsResponse> giveOdds(@RequestBody GiveOddsRequest request) {
         GiveOddsResponse giveOddsResponse = null;
         try {
+            LogUtils.getRequestLog(GIVE_ODDS, request);
             giveOddsResponse = oddsService.giveOdds(request);
+            LogUtils.getResponseLog(GIVE_ODDS, giveOddsResponse);
         } catch (Exception e) {
             LogUtils.getExceptionLog(GIVE_ODDS, request, e);
         }
@@ -42,7 +44,9 @@ public class OddsController {
     public ResponseEntity<UpdateOddsResponse> updateOdds(@RequestBody UpdateOddsRequest request) {
         UpdateOddsResponse updateOddsResponse = null;
         try {
+            LogUtils.getRequestLog(UPDATE_ODDS, request);
             updateOddsResponse = oddsService.updateOdds(request);
+            LogUtils.getResponseLog(UPDATE_ODDS, updateOddsResponse);
         } catch (Exception e) {
             LogUtils.getExceptionLog(UPDATE_ODDS, request, e);
         }
