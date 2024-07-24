@@ -1,8 +1,10 @@
 package com.elephants.betting.src.controller;
 
+import com.elephants.betting.common.utils.LogUtils;
 import com.elephants.betting.src.request.HomePageRequest;
 import com.elephants.betting.src.response.HomePageResponse;
 import com.elephants.betting.src.service.HomePageService;
+import com.mysql.cj.log.Log;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.UPDATE_USER_DETAILS;
 import static com.elephants.betting.common.constants.APIConstants.PageAPIs.GET_HOME_PAGE;
-import static com.elephants.betting.common.utils.LogUtils.ErrorLogUtils.EXCEPTION_LOG;
 
 
 @Slf4j
@@ -31,9 +33,11 @@ public class HomePageController {
     public ResponseEntity<HomePageResponse> getHomePage(@RequestBody HomePageRequest request) {
         HomePageResponse homePageResponse = null;
         try {
+            LogUtils.getRequestLog(GET_HOME_PAGE, request);
             homePageResponse = homePageService.getHomePage(request);
+            LogUtils.getResponseLog(GET_HOME_PAGE, homePageResponse);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, GET_HOME_PAGE, request, ExceptionUtils.getStackTrace(e));
+            LogUtils.getExceptionLog(GET_HOME_PAGE, request, e);
         }
         return ResponseEntity.status(200).body(homePageResponse);
     }

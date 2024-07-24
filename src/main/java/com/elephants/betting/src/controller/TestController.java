@@ -1,8 +1,10 @@
 package com.elephants.betting.src.controller;
 
+import com.elephants.betting.src.request.MatchPageRequest;
 import com.elephants.betting.src.request.MatchResultRequest;
 import com.elephants.betting.src.response.CricExchangeResponse;
 import com.elephants.betting.src.response.CricExchangeResponse.CricExchangeAttributes;
+import com.elephants.betting.src.response.MatchPageResponse;
 import com.elephants.betting.src.response.MatchResultResponse;
 import com.elephants.betting.src.service.CricketExchangeService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ public class TestController {
             log.info("cricExchange Response : {}", response);
             for(CricExchangeAttributes attributes : response.getMatches()) {
                 try {
-                    MatchResultResponse resultResponse = cricketExchangeService.getMatchResult(MatchResultRequest.builder().url(attributes.getUrl()).build());
+                    MatchPageResponse resultResponse = cricketExchangeService.getMatchResult(MatchPageRequest.builder().matchId(101).build());
                     log.info("for teams : {}  and {} got output : {}", attributes.getTeamOne(), attributes.getTeamTwo(), resultResponse);
                 } catch (Exception e) {
                     log.error("Caught exception for : {} with stack_trace : {}", attributes, ExceptionUtils.getStackTrace(e));

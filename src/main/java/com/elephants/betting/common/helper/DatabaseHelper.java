@@ -1,6 +1,7 @@
 package com.elephants.betting.common.helper;
 
 import com.elephants.betting.src.enums.StateName;
+import com.elephants.betting.src.exception.CricketMatchesNotFoundException;
 import com.elephants.betting.src.exception.CricketOddsNotFoundException;
 import com.elephants.betting.src.exception.PayoutNotFoundException;
 import com.elephants.betting.src.exception.UserNotFoundException;
@@ -62,6 +63,14 @@ public class DatabaseHelper {
 
     public CricketMoney saveCricketMoney(CricketMoney cricketMoney) {
         return cricketMoneyRepository.save(cricketMoney);
+    }
+
+    public CricketMatches findByMatchId(int matchId) {
+        Optional<CricketMatches> cricketMatchesOptional = cricketMatchesRepository.findById(matchId);
+        if(cricketMatchesOptional.isEmpty()) {
+            throw new CricketMatchesNotFoundException("in find_bu_match_id func, cricket_matches not found for id : " + matchId);
+        }
+        return cricketMatchesOptional.get();
     }
     public CricketMoney getOddsCricketByMatchId(int matchId) {
         Optional<CricketMoney> cricketOddsOptional = cricketMoneyRepository.getByMatchId(matchId);

@@ -1,5 +1,6 @@
 package com.elephants.betting.src.controller;
 
+import com.elephants.betting.common.utils.LogUtils;
 import com.elephants.betting.src.request.OnboardNewUserRequest;
 import com.elephants.betting.src.request.UpdateUserDetailsRequest;
 import com.elephants.betting.src.response.OnboardNewUserResponse;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.ONBOARD_NEW_USER;
 import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.UPDATE_USER_DETAILS;
-import static com.elephants.betting.common.utils.LogUtils.ErrorLogUtils.EXCEPTION_LOG;
 
 @Slf4j
 @RestController
@@ -36,7 +36,7 @@ public class AdminController {
         try {
             response = onboardNewUserService.onboardNewUser(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, ONBOARD_NEW_USER, request, ExceptionUtils.getStackTrace(e));
+            LogUtils.getExceptionLog(ONBOARD_NEW_USER, request, e);
         }
         return ResponseEntity.status(200).body(response);
     }
@@ -51,7 +51,7 @@ public class AdminController {
         try {
             response = userService.updateUserDetails(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, UPDATE_USER_DETAILS, request, ExceptionUtils.getStackTrace(e));
+            LogUtils.getExceptionLog(UPDATE_USER_DETAILS, request, e);
         }
         return ResponseEntity.status(200).body(response);
     }

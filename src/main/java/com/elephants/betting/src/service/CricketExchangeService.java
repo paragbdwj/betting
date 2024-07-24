@@ -1,10 +1,13 @@
 package com.elephants.betting.src.service;
 
 import com.elephants.betting.common.helper.DatabaseHelper;
+import com.elephants.betting.src.model.CricketMatches;
 import com.elephants.betting.src.request.CricExchangeRequest;
+import com.elephants.betting.src.request.MatchPageRequest;
 import com.elephants.betting.src.request.MatchResultRequest;
 import com.elephants.betting.src.response.CricExchangeResponse;
 import com.elephants.betting.src.response.CricExchangeResponse.CricExchangeAttributes;
+import com.elephants.betting.src.response.MatchPageResponse;
 import com.elephants.betting.src.response.MatchResultResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,27 +77,28 @@ public class CricketExchangeService {
                 .build());
     }
 
-    public MatchResultResponse getMatchResult(MatchResultRequest request) throws IOException{
+    public MatchPageResponse getMatchResult(MatchPageRequest request) throws IOException{
         //from matchId extract url
-        Document document = Jsoup.connect(request.getUrl()).get();
-        MatchResultResponse matchResultResponse = new MatchResultResponse();
-        setMatchResultResponse(matchResultResponse, document);
-        return matchResultResponse;
+        String url = databaseHelper.findByMatchId(request.getMatchId()).getUrl();
+        Document document = Jsoup.connect(url).get();
+        MatchPageResponse matchPageResponse = new MatchPageResponse();
+        setMatchResultResponse(matchPageResponse, document);
+        return matchPageResponse;
     }
 
-    private void setMatchResultResponse(MatchResultResponse matchResultResponse, Document document) {
+    private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document) {
         List<String> overResults = getOverResults(document);
         JSONObject matchData = getMatchDataJsonObject(document);
 
         // Extract team names and scores
-        matchResultResponse.setTeamOneName(getValueOrDefault(matchData, "team1_f_n", NULL_STRING));
-        matchResultResponse.setTeamOneScore(getValueOrDefault(matchData, "score1", NULL_STRING));
-        matchResultResponse.setTeamTwoName(getValueOrDefault(matchData, "team2_f_n", NULL_STRING));
-        matchResultResponse.setTeamTwoScore(getValueOrDefault(matchData, "score2", NULL_STRING));
-        matchResultResponse.setOversByTeamOne(getValueOrDefault(matchData, "over1", NULL_STRING));
-        matchResultResponse.setOversByTeamTwo(getValueOrDefault(matchData, "over2", NULL_STRING));
+        matchPageResponse.setTeamOneName(getValueOrDefault(matchData, "team1_f_n", NULL_STRING));
+        matchPageResponse.setTeamOneScore(getValueOrDefault(matchData, "score1", NULL_STRING));
+        matchPageResponse.setTeamTwoName(getValueOrDefault(matchData, "team2_f_n", NULL_STRING));
+        matchPageResponse.setTeamTwoScore(getValueOrDefault(matchData, "score2", NULL_STRING));
+        matchPageResponse.setOversByTeamOne(getValueOrDefault(matchData, "over1", NULL_STRING));
+        matchPageResponse.setOversByTeamTwo(getValueOrDefault(matchData, "over2", NULL_STRING));
 
-        matchResultResponse.setLastBallsResults(overResults);
+        matchPageResponse.setLastBallsResults(overResults);
     }
 
     private String getValueOrDefault(JSONObject jsonObject, String key, String defaultValue) {

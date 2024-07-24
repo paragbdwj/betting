@@ -1,5 +1,6 @@
 package com.elephants.betting.src.controller;
 
+import com.elephants.betting.common.utils.LogUtils;
 import com.elephants.betting.src.request.LoginUserRequest;
 import com.elephants.betting.src.response.LoginVerifyUserResponse;
 import com.elephants.betting.src.service.LoginService;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.UPDATE_USER_DETAILS;
 import static com.elephants.betting.common.constants.APIConstants.LoginAPIs.IS_VERIFIED_USER_API;
-import static com.elephants.betting.common.utils.LogUtils.ErrorLogUtils.EXCEPTION_LOG;
 
 //TODO : handle exceptions in each api
 @RestController
@@ -36,7 +37,7 @@ public class LoginController {
         try {
             isVerifiedUser = loginService.loginVerifyUser(request);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, IS_VERIFIED_USER_API, request, ExceptionUtils.getStackTrace(e));
+            LogUtils.getExceptionLog(IS_VERIFIED_USER_API, request, e);
         }
         return ResponseEntity.status(200).body(isVerifiedUser);
     }

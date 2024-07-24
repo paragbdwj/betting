@@ -15,8 +15,6 @@ import java.io.IOException;
 public class MatchPageService {
     private final CricketExchangeService cricketExchangeService;
     public MatchPageResponse getMatchPage(MatchPageRequest request) throws IOException {
-        MatchResultResponse matchResultResponse = cricketExchangeService.getMatchResult(request.getMatchResultRequest());
-        //TODO : add this
-        return null;
+        return cricketExchangeService.getMatchResult(request);
     }
 }

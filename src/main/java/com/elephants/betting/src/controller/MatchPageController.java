@@ -1,5 +1,6 @@
 package com.elephants.betting.src.controller;
 
+import com.elephants.betting.common.utils.LogUtils;
 import com.elephants.betting.src.request.MatchPageRequest;
 import com.elephants.betting.src.response.MatchPageResponse;
 import com.elephants.betting.src.service.MatchPageService;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.elephants.betting.common.constants.APIConstants.AdminAPIs.UPDATE_USER_DETAILS;
 import static com.elephants.betting.common.constants.APIConstants.PageAPIs.GET_MATCH_PAGE;
-import static com.elephants.betting.common.utils.LogUtils.ErrorLogUtils.EXCEPTION_LOG;
 
 @Slf4j
 @RestController
@@ -27,9 +28,11 @@ public class MatchPageController {
     public ResponseEntity<MatchPageResponse> getMatchPage(@RequestBody MatchPageRequest request) {
         MatchPageResponse matchPageResponse = null;
         try {
+            LogUtils.getRequestLog(GET_MATCH_PAGE, request);
             matchPageResponse = matchPageService.getMatchPage(request);
+            LogUtils.getResponseLog(GET_MATCH_PAGE, matchPageResponse);
         } catch (Exception e) {
-            log.error(EXCEPTION_LOG, GET_MATCH_PAGE, request, ExceptionUtils.getStackTrace(e));
+            LogUtils.getExceptionLog(GET_MATCH_PAGE, request, e);
         }
         return ResponseEntity.status(200).body(matchPageResponse);
     }

@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,5 +20,12 @@ import lombok.NoArgsConstructor;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MatchPageResponse {
-    private MatchResultResponse matchResultResponse;
+    private String matchId;
+    private List<String> lastBallsResults;
+    private String teamOneName;
+    private String teamTwoName;
+    private String teamOneScore;
+    private String teamTwoScore;
+    private String oversByTeamOne;
+    private String oversByTeamTwo;
 }
