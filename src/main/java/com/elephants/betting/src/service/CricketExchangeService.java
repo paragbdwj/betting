@@ -107,7 +107,7 @@ public class CricketExchangeService {
     }
 
     private String getValueOrDefault(JSONObject jsonObject, String key, String defaultValue) {
-        return (jsonObject.has(key) || StringUtils.isEmpty(jsonObject.getString(key))) ? jsonObject.getString(key) : defaultValue;
+        return (jsonObject.has(key)) ? (StringUtils.isEmpty(jsonObject.getString(key)) ? defaultValue : jsonObject.getString(key)) : defaultValue;
     }
 
     private JSONObject getMatchDataJsonObject(Document document) {
