@@ -2,6 +2,7 @@ package com.elephants.betting.src.service;
 
 import com.elephants.betting.common.constants.ApplicationProperties;
 import com.elephants.betting.common.helper.DatabaseHelper;
+import com.elephants.betting.common.utils.MathUtils;
 import com.elephants.betting.src.exception.CricketOddsNotFoundException;
 import com.elephants.betting.src.model.CricketMoney;
 import com.elephants.betting.src.model.Payout;
@@ -32,14 +33,14 @@ public class OddsService {
     private GiveOddsResponse calculateOddsBasisMoney(CricketMoney cricketMoney) {
         double totalMoneyAfterCut = getTotalMoney(cricketMoney) * (1 - applicationProperties.getInHouseCutPercentage());
         return GiveOddsResponse.builder()
-                .runZeroOdds(totalMoneyAfterCut/cricketMoney.getRunZeroMoney())
-                .runOneOdds(totalMoneyAfterCut/cricketMoney.getRunOneMoney())
-                .runTwoOdds(totalMoneyAfterCut/cricketMoney.getRunTwoMoney())
-                .runThreeOdds(totalMoneyAfterCut/cricketMoney.getRunThreeMoney())
-                .runFourOdds(totalMoneyAfterCut/cricketMoney.getRunFourMoney())
-                .runFiveOdds(totalMoneyAfterCut/cricketMoney.getRunFiveMoney())
-                .runSixOdds(totalMoneyAfterCut/cricketMoney.getRunSixMoney())
-                .wicketOdds(totalMoneyAfterCut/cricketMoney.getWicketMoney())
+                .runZeroOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunZeroMoney()))
+                .runOneOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunOneMoney()))
+                .runTwoOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunTwoMoney()))
+                .runThreeOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunThreeMoney()))
+                .runFourOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunFourMoney()))
+                .runFiveOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunFiveMoney()))
+                .runSixOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunSixMoney()))
+                .wicketOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getWicketMoney()))
                 .build();
     }
 

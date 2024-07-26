@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum StateName {
-    BALL_SCORE_ZERO("ball_score_zero"),
-    BALL_SCORE_ONE("ball_score_one"),
-    BALL_SCORE_TWO("ball_score_two"),
-    BALL_SCORE_THREE("ball_score_three"),
-    BALL_SCORE_FOUR("ball_score_four"),
-    BALL_SCORE_FIVE("ball_score_five"),
-    BALL_SCORE_SIX("ball_score_six"),
-    BALL_WICKET("ball_wicket");
+    BALL_SCORE_ZERO("run_zero_odds"),
+    BALL_SCORE_ONE("run_one_odds"),
+    BALL_SCORE_TWO("run_two_odds"),
+    BALL_SCORE_THREE("run_three_odds"),
+    BALL_SCORE_FOUR("run_four_odds"),
+    BALL_SCORE_FIVE("run_five_odds"),
+    BALL_SCORE_SIX("run_six_odds"),
+    BALL_WICKET("wicket_odds");
 
 
     private final String stateName;
