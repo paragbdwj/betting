@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface CricketMatchesRepository extends JpaRepository<CricketMatches, Integer> {
     List<CricketMatches> findAllByUrlIn(List<String> urls);
+    List<CricketMatches> findByIsLiveMatch(boolean isLiveMatch);
 }

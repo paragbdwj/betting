@@ -14,7 +14,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class MatchPageService {
     private final CricketExchangeService cricketExchangeService;
+    private final Scheduler scheduler;
     public MatchPageResponse getMatchPage(MatchPageRequest request) throws IOException {
-        return cricketExchangeService.getMatchResult(request);
+        return scheduler.getMatchIdToMatchPageResponse().getOrDefault(request.getMatchId(), MatchPageResponse.builder().build());
     }
 }

@@ -1,22 +1,28 @@
 package com.elephants.betting.common.helper;
 
 import com.elephants.betting.src.enums.StateName;
+import com.elephants.betting.src.enums.WinningStatus;
 import com.elephants.betting.src.exception.CricketMatchesNotFoundException;
 import com.elephants.betting.src.exception.CricketOddsNotFoundException;
 import com.elephants.betting.src.exception.PayoutNotFoundException;
 import com.elephants.betting.src.exception.UserNotFoundException;
 import com.elephants.betting.src.model.CricketMatches;
-import com.elephants.betting.src.model.CricketMoney;
+import com.elephants.betting.src.model.CricketMatchOddState;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
 import com.elephants.betting.src.repository.CricketMatchesRepository;
 import com.elephants.betting.src.repository.CricketMoneyRepository;
 import com.elephants.betting.src.repository.PayoutRepository;
 import com.elephants.betting.src.repository.UserRepository;
+import com.elephants.betting.src.request.UpdateOddsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,11 +52,11 @@ public class DatabaseHelper {
     }
 
     public Payout getPayoutByUserId(Integer userId) {
-        Optional<Payout> payoutOptional = payoutRepository.findByUserId(userId);
-        if(payoutOptional.isEmpty()) {
+        List<Payout> payoutList = payoutRepository.findTopPayoutsByUserIdAndOddTransactionOrderByCreatedAtDesc(userId, false, PageRequest.of(0, 1));
+        if(payoutList.isEmpty()) {
             throw new PayoutNotFoundException("payout details not found for userId : " + userId);
         }
-        return payoutOptional.get();
+        return payoutList.get(0);
     }
 
     public Payout savePayout(Payout payout) {
@@ -61,8 +67,8 @@ public class DatabaseHelper {
         return cricketMatchesRepository.saveAll(cricketMatchesList);
     }
 
-    public CricketMoney saveCricketMoney(CricketMoney cricketMoney) {
-        return cricketMoneyRepository.save(cricketMoney);
+    public CricketMatchOddState saveCricketMoney(CricketMatchOddState cricketMatchOddState) {
+        return cricketMoneyRepository.save(cricketMatchOddState);
     }
 
     public CricketMatches findByMatchId(int matchId) {
@@ -72,34 +78,34 @@ public class DatabaseHelper {
         }
         return cricketMatchesOptional.get();
     }
-    public CricketMoney getOddsCricketByMatchId(int matchId) {
-        Optional<CricketMoney> cricketOddsOptional = cricketMoneyRepository.getByMatchId(matchId);
+    public CricketMatchOddState getOddsCricketByMatchId(int matchId) {
+        Optional<CricketMatchOddState> cricketOddsOptional = cricketMoneyRepository.getByMatchId(matchId);
         if(cricketOddsOptional.isEmpty()) {
             throw new CricketOddsNotFoundException("in give_odds func, criketOdds not found for match_id : " + matchId);
         }
         return cricketOddsOptional.get();
     }
 
-    public CricketMoney updateOddMoneyInDatabaseBasisStateName(boolean isAddition, int matchId, String stateName, double userMoney) {
-        CricketMoney cricketMoney = getOddsCricketByMatchId(matchId);
+    public CricketMatchOddState updateOddMoneyInDatabaseBasisStateName(boolean isAddition, int matchId, String stateName, double userMoney) {
+        CricketMatchOddState cricketMatchOddState = getOddsCricketByMatchId(matchId);
         if(StateName.BALL_WICKET.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setWicketMoney(updateMoney(cricketMoney.getWicketMoney(), isAddition, userMoney));
+            cricketMatchOddState.setWicketMoney(updateMoney(cricketMatchOddState.getWicketMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_ZERO.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunZeroMoney(updateMoney(cricketMoney.getRunZeroMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunZeroMoney(updateMoney(cricketMatchOddState.getRunZeroMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_ONE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunOneMoney(updateMoney(cricketMoney.getRunOneMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunOneMoney(updateMoney(cricketMatchOddState.getRunOneMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_TWO.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunTwoMoney(updateMoney(cricketMoney.getRunTwoMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunTwoMoney(updateMoney(cricketMatchOddState.getRunTwoMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_THREE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunThreeMoney(updateMoney(cricketMoney.getRunThreeMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunThreeMoney(updateMoney(cricketMatchOddState.getRunThreeMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_FOUR.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunFourMoney(updateMoney(cricketMoney.getRunFourMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunFourMoney(updateMoney(cricketMatchOddState.getRunFourMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_FIVE.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunFiveMoney(updateMoney(cricketMoney.getRunFiveMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunFiveMoney(updateMoney(cricketMatchOddState.getRunFiveMoney(), isAddition, userMoney));
         } else if(StateName.BALL_SCORE_SIX.getStateName().equalsIgnoreCase(stateName)) {
-            cricketMoney.setRunSixMoney(updateMoney(cricketMoney.getRunSixMoney(), isAddition, userMoney));
+            cricketMatchOddState.setRunSixMoney(updateMoney(cricketMatchOddState.getRunSixMoney(), isAddition, userMoney));
         }
-        return saveCricketMoney(cricketMoney);
+        return saveCricketMoney(cricketMatchOddState);
     }
 
     public Payout updateMoneyInPayout(boolean isAddition, Integer userId, double money) {
@@ -112,15 +118,53 @@ public class DatabaseHelper {
         return totalAmount + (isAddition? money: -money);
     }
 
-    public List<CricketMoney> saveAllCricketMoneies(List<CricketMoney> cricketMoneyList) {
-        return cricketMoneyRepository.saveAll(cricketMoneyList);
+    public List<CricketMatchOddState> saveAllCricketMoneies(List<CricketMatchOddState> cricketMatchOddStateList) {
+        return cricketMoneyRepository.saveAll(cricketMatchOddStateList);
     }
 
-    public List<CricketMoney> getAllCricketMoneyByMatchIdList(List<Integer> matchIds) {
+    public List<CricketMatchOddState> getAllCricketMoneyByMatchIdList(List<Integer> matchIds) {
         return cricketMoneyRepository.findAllByMatchIdIn(matchIds);
     }
 
     public List<CricketMatches> getCricketMatchesListByUrls(List<String> urls) {
         return cricketMatchesRepository.findAllByUrlIn(urls);
+    }
+
+    public Payout updateMoneyInPayoutBasisRequest(boolean isAddition, UpdateOddsRequest request) {
+        Payout payout = getPayoutByUserId(request.getUserId());
+        payout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, request.getMoneyOnStake()));
+        payout.setCreatedAt(LocalDateTime.now());
+        payout.setOdds(request.getOddValue());
+        payout.setMatchDetails(request.getMatchDetails());
+        payout.setOddState(request.getStateName());
+        payout.setMoneyOnStake(request.getMoneyOnStake());
+        payout.setOddTransaction(true);
+        payout.setId(null);
+        payout.setWinningStatus(WinningStatus.WIN.getWinningStatus());
+        payout.setMatchId(request.getMatchId());
+        return savePayout(payout);
+    }
+
+    public List<Payout> getTopNTransactionsByUserId(int userId, int n) {
+        return payoutRepository.findTopPayoutsByUserIdAndOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, n));
+    }
+
+    public List<Payout> findByWinningStatus(String winningStatus) {
+        int pageNumber = 0, pageSize = 10;
+        int maxIntegrity = 10000;
+        List<Payout> payoutList = new ArrayList<>();
+        while(maxIntegrity-- > 0) {
+            List<Payout> tempPayoutList = payoutRepository.findAllByWinningStatus(winningStatus, PageRequest.of(pageNumber, pageSize));
+            if(CollectionUtils.isEmpty(tempPayoutList)) {
+                break;
+            }
+            payoutList.addAll(tempPayoutList);
+            pageSize++;
+        }
+        return payoutList;
+    }
+
+    public List<CricketMatches> getAllLiveMatches(){
+        return cricketMatchesRepository.findByIsLiveMatch(true);
     }
 }

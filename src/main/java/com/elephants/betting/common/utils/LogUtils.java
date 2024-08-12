@@ -7,7 +7,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 @UtilityClass
 @Slf4j
 public class LogUtils {
-
     public void getRequestLog(String apiName, Object request) {
         log.info("for the api : {}, got request : {}", apiName, request);
     }
@@ -18,5 +17,9 @@ public class LogUtils {
 
     public void getExceptionLog(String apiName, Object request, Exception e) {
         log.error("got exception in : {} for request : {} with stack_trace : {}", apiName, request, ExceptionUtils.getStackTrace(e));
+    }
+
+    public void getWrongCredentialsExceptionLog(String apiName, Object request, Exception e) {
+        log.error("got wrong_credentials_exception in : {} for request : {} with stack_trace : {}", apiName, request, ExceptionUtils.getStackTrace(e));
     }
 }

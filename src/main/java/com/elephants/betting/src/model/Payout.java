@@ -32,9 +32,27 @@ public class Payout {
     @Column(name = "total_amount")
     private Double totalAmount;  // by default to be set true
 
+    @Column(name = "odd_state")
+    private String oddState;
+
+    @Column(name = "match-details")
+    private String matchDetails;
+
+    @Column(name = "odds")
+    private double odds;
+
+    @Column(name = "money_on_stake")
+    private double moneyOnStake;
+
+    @Column(name = "winning_status")
+    private String winningStatus;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "match_id")
+    private int matchId;
+
+    @Column(name = "is_odd_transaction")
+    private boolean isOddTransaction = false;
 }

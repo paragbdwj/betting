@@ -3,21 +3,15 @@ package com.elephants.betting.src.service;
 import com.elephants.betting.common.constants.ApplicationProperties;
 import com.elephants.betting.common.helper.DatabaseHelper;
 import com.elephants.betting.common.utils.MathUtils;
-import com.elephants.betting.src.exception.CricketOddsNotFoundException;
-import com.elephants.betting.src.model.CricketMoney;
+import com.elephants.betting.src.model.CricketMatchOddState;
 import com.elephants.betting.src.model.Payout;
-import com.elephants.betting.src.model.User;
 import com.elephants.betting.src.request.GiveOddsRequest;
-import com.elephants.betting.src.request.OnboardNewUserRequest;
 import com.elephants.betting.src.request.UpdateOddsRequest;
 import com.elephants.betting.src.response.GiveOddsResponse;
 import com.elephants.betting.src.response.UpdateOddsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -26,41 +20,42 @@ public class OddsService {
     private final DatabaseHelper databaseHelper;
     private final ApplicationProperties applicationProperties;
     public GiveOddsResponse giveOdds(GiveOddsRequest request) {
-        CricketMoney cricketMoney = databaseHelper.getOddsCricketByMatchId(request.getMatchId());
-        return calculateOddsBasisMoney(cricketMoney);
+        CricketMatchOddState cricketMatchOddState = databaseHelper.getOddsCricketByMatchId(request.getMatchId());
+        return calculateOddsBasisMoney(cricketMatchOddState);
     }
 
-    private GiveOddsResponse calculateOddsBasisMoney(CricketMoney cricketMoney) {
-        double totalMoneyAfterCut = getTotalMoney(cricketMoney) * (1 - applicationProperties.getInHouseCutPercentage());
+    private GiveOddsResponse calculateOddsBasisMoney(CricketMatchOddState cricketMatchOddState) {
+        double totalMoneyAfterCut = getTotalMoney(cricketMatchOddState) * (1 - applicationProperties.getInHouseCutPercentage());
         return GiveOddsResponse.builder()
-                .runZeroOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunZeroMoney()))
-                .runOneOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunOneMoney()))
-                .runTwoOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunTwoMoney()))
-                .runThreeOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunThreeMoney()))
-                .runFourOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunFourMoney()))
-                .runFiveOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunFiveMoney()))
-                .runSixOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getRunSixMoney()))
-                .wicketOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/cricketMoney.getWicketMoney()))
+                .runZeroOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunZeroMoney()))
+                .runOneOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunOneMoney()))
+                .runTwoOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunTwoMoney()))
+                .runThreeOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunThreeMoney()))
+                .runFourOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunFourMoney()))
+                .runFiveOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunFiveMoney()))
+                .runSixOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunSixMoney()))
+                .wicketOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getWicketMoney()))
                 .build();
     }
 
-    private double getTotalMoney(CricketMoney cricketMoney) {
-        return cricketMoney.getRunOneMoney()
-                + cricketMoney.getRunTwoMoney()
-                + cricketMoney.getRunThreeMoney()
-                + cricketMoney.getRunFourMoney()
-                + cricketMoney.getRunFiveMoney()
-                + cricketMoney.getRunSixMoney()
-                + cricketMoney.getWicketMoney()
-                + cricketMoney.getRunZeroMoney();
+    private double getTotalMoney(CricketMatchOddState cricketMatchOddState) {
+        return cricketMatchOddState.getRunOneMoney()
+                + cricketMatchOddState.getRunTwoMoney()
+                + cricketMatchOddState.getRunThreeMoney()
+                + cricketMatchOddState.getRunFourMoney()
+                + cricketMatchOddState.getRunFiveMoney()
+                + cricketMatchOddState.getRunSixMoney()
+                + cricketMatchOddState.getWicketMoney()
+                + cricketMatchOddState.getRunZeroMoney();
     }
 
     public UpdateOddsResponse updateOdds(UpdateOddsRequest request) {
-        Payout payout = databaseHelper.updateMoneyInPayout(false, request.getUserId(), request.getUserMoney());
-        CricketMoney cricketMoney = databaseHelper.updateOddMoneyInDatabaseBasisStateName(true, request.getMatchId(), request.getStateName(), request.getUserMoney());
+        Payout payout = databaseHelper.updateMoneyInPayoutBasisRequest(false, request);
+        CricketMatchOddState cricketMatchOddState = databaseHelper.updateOddMoneyInDatabaseBasisStateName(true, request.getMatchId(), request.getStateName(), request.getMoneyOnStake());
         return UpdateOddsResponse.builder()
-                .oddsResponse(calculateOddsBasisMoney(cricketMoney))
+                .oddsResponse(calculateOddsBasisMoney(cricketMatchOddState))
                 .userMoney(payout.getTotalAmount())
+                .success(true)
                 .build();
     }
 

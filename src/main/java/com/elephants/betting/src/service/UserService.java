@@ -4,8 +4,10 @@ import com.elephants.betting.src.config.NullAwareBeanUtilsBean;
 import com.elephants.betting.src.exception.PayoutNotFoundException;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
+import com.elephants.betting.src.request.GetUserRequest;
 import com.elephants.betting.src.request.UpdateUserDetailsRequest;
 import com.elephants.betting.src.request.UpdateUserRequest;
+import com.elephants.betting.src.response.GetUserResponse;
 import com.elephants.betting.src.response.UpdateUserDetailsResponse;
 import com.elephants.betting.src.response.UpdateUserResponse;
 import com.elephants.betting.common.helper.DatabaseHelper;
@@ -48,6 +50,15 @@ public class UserService {
     public UpdateUserDetailsResponse updateUserDetails(UpdateUserDetailsRequest request) {
         Optional.ofNullable(request.getMoney()).ifPresent(money -> databaseHelper.updateMoneyInPayout(request.isAddition(), request.getUserId(), request.getMoney()));
         return UpdateUserDetailsResponse.builder()
+                .success(true)
+                .build();
+    }
+
+
+    public GetUserResponse getUser(GetUserRequest request) {
+        User user = databaseHelper.getUserByUserId(request.getUserId());
+        return GetUserResponse.builder()
+                .name(user.getUsername())
                 .success(true)
                 .build();
     }

@@ -55,6 +55,7 @@ public class OnboardNewUserService {
                 .username(request.getName().substring(0, 4) + RandomUtils.generateRandomString(4))
                 .password(RandomUtils.generateRandomString(12))
                 .onboarderName(request.getOnboarderName())
+                .name(request.getName())
                 .build();
     }
 }

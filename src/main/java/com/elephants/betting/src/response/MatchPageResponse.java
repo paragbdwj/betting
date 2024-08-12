@@ -20,7 +20,7 @@ import java.util.List;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MatchPageResponse {
-    private String matchId;
+    private int matchId;
     private List<String> lastBallsResults;
     private String teamOneName;
     private String teamTwoName;

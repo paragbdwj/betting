@@ -42,7 +42,9 @@ public class OddsController {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UpdateOddsResponse> updateOdds(@RequestBody UpdateOddsRequest request) {
-        UpdateOddsResponse updateOddsResponse = null;
+        UpdateOddsResponse updateOddsResponse = UpdateOddsResponse.builder()
+                .success(false)
+                .build();
         try {
             LogUtils.getRequestLog(UPDATE_ODDS, request);
             updateOddsResponse = oddsService.updateOdds(request);

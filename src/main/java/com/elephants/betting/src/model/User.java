@@ -30,6 +30,10 @@ public class User {
 
     private String password;
 
+    private String name;
+
+    private Boolean isLoggedIn;
+
     @Column(name = "phone_number")
     private String phoneNumber;
 

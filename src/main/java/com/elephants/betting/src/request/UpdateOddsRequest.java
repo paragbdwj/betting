@@ -18,8 +18,10 @@ import lombok.NoArgsConstructor;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpdateOddsRequest {
-    private double userMoney;
+    private double moneyOnStake;
     private String stateName;
     private int userId;
     private int matchId;
+    private double oddValue;
+    private String matchDetails;
 }

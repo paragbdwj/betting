@@ -1,14 +1,11 @@
 package com.elephants.betting.src.service;
 
 import com.elephants.betting.common.helper.DatabaseHelper;
-import com.elephants.betting.src.model.CricketMatches;
 import com.elephants.betting.src.request.CricExchangeRequest;
 import com.elephants.betting.src.request.MatchPageRequest;
-import com.elephants.betting.src.request.MatchResultRequest;
 import com.elephants.betting.src.response.CricExchangeResponse;
 import com.elephants.betting.src.response.CricExchangeResponse.CricExchangeAttributes;
 import com.elephants.betting.src.response.MatchPageResponse;
-import com.elephants.betting.src.response.MatchResultResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -53,6 +50,7 @@ public class CricketExchangeService {
     private void buildCricExchangeAttributesMap(Element liveCard) {
         Elements teamScores = liveCard.select(".team-score");
         Elements anchors = liveCard.select("a[href]");
+        Element liveTagElement = liveCard.selectFirst("span.liveTag");
         String liveScoreHref = "";
 
         // this is the link which will be required to get ball by ball analysis
@@ -72,13 +70,14 @@ public class CricketExchangeService {
         // key is href value as it is going to be unique
         cricExchangeAttributesMap.put(CRIC_EXCHANGE_API_URL + liveScoreHref, CricExchangeAttributes.builder()
                 .url(CRIC_EXCHANGE_API_URL + liveScoreHref)
-                .isLiveMatch(!teamScores.get(0).select("sup").isEmpty())
+                .isLiveMatch(Objects.nonNull(liveTagElement))
                 .teamOne(teamOne)
                 .teamTwo(teamTwo)
                 .teamOneOvers(teamOneOvers)
                 .teamTwoOvers(teamTwoOvers)
                 .teamOneScore(teamScores.get(0).select("span").get(2).text())
                 .teamTwoScore(teamScores.get(1).select("span").get(2).text())
+                .upcomingTime(Objects.requireNonNull(liveCard.select("span.upcomingTime")).attr("title"))
                 .build());
     }
 
@@ -87,11 +86,11 @@ public class CricketExchangeService {
         String url = databaseHelper.findByMatchId(request.getMatchId()).getUrl();
         Document document = Jsoup.connect(url).get();
         MatchPageResponse matchPageResponse = new MatchPageResponse();
-        setMatchResultResponse(matchPageResponse, document);
+        setMatchResultResponse(matchPageResponse, document, request.getMatchId());
         return matchPageResponse;
     }
 
-    private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document) {
+    private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document, int matchId) {
         List<String> overResults = getOverResults(document);
         JSONObject matchData = getMatchDataJsonObject(document);
 
@@ -102,7 +101,7 @@ public class CricketExchangeService {
         matchPageResponse.setTeamTwoScore(getValueOrDefault(matchData, "score2", NULL_STRING));
         matchPageResponse.setOversByTeamOne(getValueOrDefault(matchData, "over1", NULL_STRING));
         matchPageResponse.setOversByTeamTwo(getValueOrDefault(matchData, "over2", NULL_STRING));
-
+        matchPageResponse.setMatchId(matchId);
         matchPageResponse.setLastBallsResults(overResults);
     }
 

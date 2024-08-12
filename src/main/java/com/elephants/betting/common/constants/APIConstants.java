@@ -9,11 +9,13 @@ public class APIConstants {
     @UtilityClass
     public static class LoginAPIs {
         public static final String IS_VERIFIED_USER_API = "/is-verified-user";
+        public static final String IS_LOGGED_IN = "/user/is-logged-in";
+        public static final String USER_LOGOUT = "/user/logout";
     }
     @UtilityClass
     public static class UserAPIs {
         public static final String UPDATE_USER = "/user/update";
-
+        public static final String GET_USER = "/user/get";
     }
 
     @UtilityClass
@@ -37,5 +39,11 @@ public class APIConstants {
     public static class OddsAPIs {
         public static final String GIVE_ODDS = "/odds/get";
         public static final String UPDATE_ODDS = "/update/odds";
+    }
+
+    @UtilityClass
+    public static class NavBarAPIs {
+        public static final String UPDATE_PASSWORD_API = "/update/password";
+        public static final String GET_HISTORICAL_TRANSACTIONS = "/transactions/get";
     }
 }

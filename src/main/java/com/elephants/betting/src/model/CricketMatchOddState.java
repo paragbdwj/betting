@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRICKET_MONEY;
+import static com.elephants.betting.common.constants.SQLConstants.TableNames.CRICKET_MATCH_ODD_STATE;
+
 
 /*
 This will give money instead of odds, from this we can calculate odds for respective states
@@ -23,14 +24,20 @@ This will give money instead of odds, from this we can calculate odds for respec
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = CRICKET_MONEY)
-public class CricketMoney {
+@Table(name = CRICKET_MATCH_ODD_STATE)
+public class CricketMatchOddState {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "match_id")
     private int matchId;
+
+    @Column(name = "ball_state")
+    private String ballState;
+
+    @Column(name = "run_result")
+    private String runResult;
 
     @Column(name = "run_zero_money")
     private double runZeroMoney;

@@ -57,7 +57,13 @@ public class CricketMatches {
     private String url;
 
     @Column(name = "is_live_match")
-    private boolean isLiveMatch;
+    private Boolean isLiveMatch;
+
+    @Column(name = "last_ball_result")
+    private String lastBallResult;
+
+    @Column(name = "upcoming_time")
+    private String upcomingTime;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

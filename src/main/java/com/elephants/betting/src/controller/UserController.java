@@ -1,7 +1,9 @@
 package com.elephants.betting.src.controller;
 
 import com.elephants.betting.common.utils.LogUtils;
+import com.elephants.betting.src.request.GetUserRequest;
 import com.elephants.betting.src.request.UpdateUserRequest;
+import com.elephants.betting.src.response.GetUserResponse;
 import com.elephants.betting.src.response.UpdateUserResponse;
 import com.elephants.betting.src.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.elephants.betting.common.constants.APIConstants.UserAPIs.GET_USER;
 import static com.elephants.betting.common.constants.APIConstants.UserAPIs.UPDATE_USER;
 
 @Slf4j
@@ -40,5 +43,24 @@ public class UserController {
 
         }
         return ResponseEntity.status(200).body(updateUserResponse);
+    }
+
+    @PostMapping(value = GET_USER,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GetUserResponse> getUser(@RequestBody GetUserRequest request) {
+        // set default response to false
+        GetUserResponse getUserResponse = GetUserResponse.builder()
+                .success(false)
+                .build();
+        try {
+            LogUtils.getRequestLog(GET_USER, request);
+            getUserResponse = userService.getUser(request);
+            LogUtils.getResponseLog(GET_USER, getUserResponse);
+        } catch (Exception e) {
+            LogUtils.getExceptionLog(GET_USER, request, e);
+
+        }
+        return ResponseEntity.status(200).body(getUserResponse);
     }
 }

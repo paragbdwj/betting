@@ -37,5 +37,6 @@ public class CricExchangeResponse {
         private boolean isLiveMatch;
         private String teamOneOvers;
         private String teamTwoOvers;
+        private String upcomingTime;
     }
 }

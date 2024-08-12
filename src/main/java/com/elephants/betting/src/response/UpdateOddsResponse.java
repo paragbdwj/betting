@@ -21,4 +21,5 @@ import lombok.NoArgsConstructor;
 public class UpdateOddsResponse {
     private double userMoney;
     private GiveOddsResponse oddsResponse;
+    private boolean success;
 }

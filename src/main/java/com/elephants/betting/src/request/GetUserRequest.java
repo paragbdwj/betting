@@ -1,6 +1,5 @@
-package com.elephants.betting.src.response;
+package com.elephants.betting.src.request;
 
-import com.elephants.betting.src.model.CricketMatches;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -11,8 +10,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,6 +17,6 @@ import java.util.List;
 @JsonNaming(SnakeCaseStrategy.class)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class HomePageResponse {
-    private List<CricketMatches> matches;
+public class GetUserRequest {
+    private int userId;
 }
