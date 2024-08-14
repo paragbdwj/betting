@@ -3,7 +3,6 @@ package com.elephants.betting.src.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies.SnakeCaseStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -27,4 +26,6 @@ public class GiveOddsResponse {
     private double runFiveOdds;
     private double runSixOdds;
     private double wicketOdds;
+    private int matchId;
+    private String ballState;
 }

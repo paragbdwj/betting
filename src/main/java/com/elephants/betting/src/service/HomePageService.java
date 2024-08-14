@@ -31,43 +31,43 @@ public class HomePageService {
         return createHomePageResponse(matches);
     }
 
-    private void saveInCricketMoneyDb(List<CricketMatches> matches) {
-        List<CricketMatchOddState> cricketMatchOddStateList = getCricketMoneyList(matches);
-        List<CricketMatchOddState> existingCricketMatchOddStateList = databaseHelper.getAllCricketMoneyByMatchIdList(cricketMatchOddStateList.stream().map(CricketMatchOddState::getMatchId).toList());
-        Map<Integer, CricketMatchOddState> matchIdToCricketMoneyMap = createMatchIdToCricketMoneyMap(existingCricketMatchOddStateList);
-        for(CricketMatchOddState cricketMatchOddState : cricketMatchOddStateList) {
-            if(matchIdToCricketMoneyMap.containsKey(cricketMatchOddState.getMatchId())) {
-                cricketMatchOddState.setId(matchIdToCricketMoneyMap.get(cricketMatchOddState.getMatchId()).getId());
-            } else {
-                // TODO : look into this below
-                cricketMatchOddState.setRunZeroMoney(1.0);
-                cricketMatchOddState.setRunOneMoney(1.0);
-                cricketMatchOddState.setRunTwoMoney(1.0);
-                cricketMatchOddState.setRunThreeMoney(1.0);
-                cricketMatchOddState.setRunFourMoney(1.0);
-                cricketMatchOddState.setRunFiveMoney(1.0);
-                cricketMatchOddState.setRunSixMoney(1.0);
-                cricketMatchOddState.setWicketMoney(1.0);
-            }
-        }
-        databaseHelper.saveAllCricketMoneies(cricketMatchOddStateList);
-    }
+//    private void saveInCricketMoneyDb(List<CricketMatches> matches) {
+//        List<CricketMatchOddState> cricketMatchOddStateList = getCricketMoneyList(matches);
+//        List<CricketMatchOddState> existingCricketMatchOddStateList = databaseHelper.getAllCricketMoneyByMatchIdList(cricketMatchOddStateList.stream().map(CricketMatchOddState::getMatchId).toList());
+//        Map<Integer, CricketMatchOddState> matchIdToCricketMoneyMap = createMatchIdToCricketMoneyMap(existingCricketMatchOddStateList);
+//        for(CricketMatchOddState cricketMatchOddState : cricketMatchOddStateList) {
+//            if(matchIdToCricketMoneyMap.containsKey(cricketMatchOddState.getMatchId())) {
+//                cricketMatchOddState.setId(matchIdToCricketMoneyMap.get(cricketMatchOddState.getMatchId()).getId());
+//            } else {
+//                // TODO : look into this below
+//                cricketMatchOddState.setRunZeroMoney(1.0);
+//                cricketMatchOddState.setRunOneMoney(1.0);
+//                cricketMatchOddState.setRunTwoMoney(1.0);
+//                cricketMatchOddState.setRunThreeMoney(1.0);
+//                cricketMatchOddState.setRunFourMoney(1.0);
+//                cricketMatchOddState.setRunFiveMoney(1.0);
+//                cricketMatchOddState.setRunSixMoney(1.0);
+//                cricketMatchOddState.setWicketMoney(1.0);
+//            }
+//        }
+//        databaseHelper.saveAllCricketMoneies(cricketMatchOddStateList);
+//    }
 
-    private Map<Integer, CricketMatchOddState> createMatchIdToCricketMoneyMap(List<CricketMatchOddState> existingCricketMatchOddStateList) {
-        Map<Integer, CricketMatchOddState> matchIdToCricketMoneyMap = new HashMap<>();
-        for(CricketMatchOddState cricketMatchOddState : existingCricketMatchOddStateList) {
-            matchIdToCricketMoneyMap.put(cricketMatchOddState.getMatchId(), cricketMatchOddState);
-        }
-        return matchIdToCricketMoneyMap;
-    }
+//    private Map<Integer, CricketMatchOddState> createMatchIdToCricketMoneyMap(List<CricketMatchOddState> existingCricketMatchOddStateList) {
+//        Map<Integer, CricketMatchOddState> matchIdToCricketMoneyMap = new HashMap<>();
+//        for(CricketMatchOddState cricketMatchOddState : existingCricketMatchOddStateList) {
+//            matchIdToCricketMoneyMap.put(cricketMatchOddState.getMatchId(), cricketMatchOddState);
+//        }
+//        return matchIdToCricketMoneyMap;
+//    }
 
-    private List<CricketMatchOddState> getCricketMoneyList(List<CricketMatches> matches) {
-        return matches.stream()
-                .map(match -> CricketMatchOddState.builder()
-                        .matchId(match.getMatchId())
-                        .build())
-                .toList();
-    }
+//    private List<CricketMatchOddState> getCricketMoneyList(List<CricketMatches> matches) {
+//        return matches.stream()
+//                .map(match -> CricketMatchOddState.builder()
+//                        .matchId(match.getMatchId())
+//                        .build())
+//                .toList();
+//    }
 
     private List<CricketMatches> saveDetailsInDB(CricExchangeResponse cricExchangeResponse) {
         List<CricketMatches> cricketMatchesList = getCricketMatchesList(cricExchangeResponse.getMatches());

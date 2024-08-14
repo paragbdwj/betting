@@ -35,6 +35,8 @@ public class OddsService {
                 .runFiveOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunFiveMoney()))
                 .runSixOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunSixMoney()))
                 .wicketOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getWicketMoney()))
+                .matchId(cricketMatchOddState.getMatchId())
+                .ballState(cricketMatchOddState.getBallState())
                 .build();
     }
 

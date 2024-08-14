@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -36,6 +37,8 @@ public class OnboardNewUserService {
         databaseHelper.savePayout(Payout.builder()
                         .userId(user.getId())
                         .totalAmount(request.getMoney())
+                        .isOddTransaction(false)
+                        .createdAt(LocalDateTime.now())
                 .build());
     }
 

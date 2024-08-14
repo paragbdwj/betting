@@ -16,6 +16,7 @@ public class APIConstants {
     public static class UserAPIs {
         public static final String UPDATE_USER = "/user/update";
         public static final String GET_USER = "/user/get";
+        public static final String GET_PAYOUT_CONTROLLER = "/get/payout";
     }
 
     @UtilityClass

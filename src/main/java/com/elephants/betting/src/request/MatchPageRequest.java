@@ -18,5 +18,5 @@ import lombok.NoArgsConstructor;
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MatchPageRequest {
-    private int matchId;
+    private Integer matchId;
 }

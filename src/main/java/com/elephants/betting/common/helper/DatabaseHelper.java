@@ -1,5 +1,6 @@
 package com.elephants.betting.common.helper;
 
+import com.elephants.betting.src.config.NullAwareBeanUtilsBean;
 import com.elephants.betting.src.enums.StateName;
 import com.elephants.betting.src.enums.WinningStatus;
 import com.elephants.betting.src.exception.CricketMatchesNotFoundException;
@@ -11,16 +12,18 @@ import com.elephants.betting.src.model.CricketMatchOddState;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
 import com.elephants.betting.src.repository.CricketMatchesRepository;
-import com.elephants.betting.src.repository.CricketMoneyRepository;
+import com.elephants.betting.src.repository.CricketOddStateManagementRepository;
 import com.elephants.betting.src.repository.PayoutRepository;
 import com.elephants.betting.src.repository.UserRepository;
 import com.elephants.betting.src.request.UpdateOddsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,7 @@ public class DatabaseHelper {
     private final UserRepository userRepository;
     private final PayoutRepository payoutRepository;
     private final CricketMatchesRepository cricketMatchesRepository;
-    private final CricketMoneyRepository cricketMoneyRepository;
+    private final CricketOddStateManagementRepository cricketOddStateManagementRepository;
 
     public User getUserByUserId(Integer userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -52,7 +55,15 @@ public class DatabaseHelper {
     }
 
     public Payout getPayoutByUserId(Integer userId) {
-        List<Payout> payoutList = payoutRepository.findTopPayoutsByUserIdAndOddTransactionOrderByCreatedAtDesc(userId, false, PageRequest.of(0, 1));
+        List<Payout> payoutList = payoutRepository.findTopPayoutsByUserIdOrderByCreatedAtDesc(userId, PageRequest.of(0, 1));
+        if(payoutList.isEmpty()) {
+            throw new PayoutNotFoundException("payout details not found for userId : " + userId);
+        }
+        return payoutList.get(0);
+    }
+
+    public Payout getOddTransactionPayoutByUserId(Integer userId) {
+        List<Payout> payoutList = payoutRepository.findTopByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, 1));
         if(payoutList.isEmpty()) {
             throw new PayoutNotFoundException("payout details not found for userId : " + userId);
         }
@@ -68,7 +79,7 @@ public class DatabaseHelper {
     }
 
     public CricketMatchOddState saveCricketMoney(CricketMatchOddState cricketMatchOddState) {
-        return cricketMoneyRepository.save(cricketMatchOddState);
+        return cricketOddStateManagementRepository.save(cricketMatchOddState);
     }
 
     public CricketMatches findByMatchId(int matchId) {
@@ -79,7 +90,7 @@ public class DatabaseHelper {
         return cricketMatchesOptional.get();
     }
     public CricketMatchOddState getOddsCricketByMatchId(int matchId) {
-        Optional<CricketMatchOddState> cricketOddsOptional = cricketMoneyRepository.getByMatchId(matchId);
+        Optional<CricketMatchOddState> cricketOddsOptional = cricketOddStateManagementRepository.getByMatchId(matchId);
         if(cricketOddsOptional.isEmpty()) {
             throw new CricketOddsNotFoundException("in give_odds func, criketOdds not found for match_id : " + matchId);
         }
@@ -108,9 +119,14 @@ public class DatabaseHelper {
         return saveCricketMoney(cricketMatchOddState);
     }
 
-    public Payout updateMoneyInPayout(boolean isAddition, Integer userId, double money) {
-        Payout payout = getPayoutByUserId(userId);
+    public Payout updateMoneyInPayout(boolean isAddition, Integer userId, double money) throws InvocationTargetException, IllegalAccessException {
+        Payout payout = new Payout();
+        BeanUtilsBean notNull = new NullAwareBeanUtilsBean();
+        notNull.copyProperties(payout, getPayoutByUserId(userId));
+        payout.setId(null);
         payout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, money));
+        payout.setOddTransaction(false);
+        payout.setCreatedAt(LocalDateTime.now());
         return savePayout(payout);
     }
 
@@ -118,12 +134,12 @@ public class DatabaseHelper {
         return totalAmount + (isAddition? money: -money);
     }
 
-    public List<CricketMatchOddState> saveAllCricketMoneies(List<CricketMatchOddState> cricketMatchOddStateList) {
-        return cricketMoneyRepository.saveAll(cricketMatchOddStateList);
+    public List<CricketMatchOddState> saveAllCricketMatchStateOddManagement(List<CricketMatchOddState> cricketMatchOddStateList) {
+        return cricketOddStateManagementRepository.saveAll(cricketMatchOddStateList);
     }
 
     public List<CricketMatchOddState> getAllCricketMoneyByMatchIdList(List<Integer> matchIds) {
-        return cricketMoneyRepository.findAllByMatchIdIn(matchIds);
+        return cricketOddStateManagementRepository.findAllByMatchIdIn(matchIds);
     }
 
     public List<CricketMatches> getCricketMatchesListByUrls(List<String> urls) {
@@ -131,7 +147,7 @@ public class DatabaseHelper {
     }
 
     public Payout updateMoneyInPayoutBasisRequest(boolean isAddition, UpdateOddsRequest request) {
-        Payout payout = getPayoutByUserId(request.getUserId());
+        Payout payout = getOddTransactionPayoutByUserId(request.getUserId());
         payout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, request.getMoneyOnStake()));
         payout.setCreatedAt(LocalDateTime.now());
         payout.setOdds(request.getOddValue());
@@ -146,7 +162,7 @@ public class DatabaseHelper {
     }
 
     public List<Payout> getTopNTransactionsByUserId(int userId, int n) {
-        return payoutRepository.findTopPayoutsByUserIdAndOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, n));
+        return payoutRepository.findTopByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, n));
     }
 
     public List<Payout> findByWinningStatus(String winningStatus) {

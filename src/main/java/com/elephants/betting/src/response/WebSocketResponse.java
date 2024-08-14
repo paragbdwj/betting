@@ -1,4 +1,4 @@
-package com.elephants.betting.src.request;
+package com.elephants.betting.src.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,8 +17,7 @@ import lombok.NoArgsConstructor;
 @JsonNaming(SnakeCaseStrategy.class)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateUserDetailsRequest {
-    private Double money;
-    private Boolean isAddition;
-    private Integer userId;
+public class WebSocketResponse {
+    private GiveOddsResponse giveOddsResponse;
+    private MatchPageResponse matchPageResponse;
 }

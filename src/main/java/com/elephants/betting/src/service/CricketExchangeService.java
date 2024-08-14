@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class CricketExchangeService {
         return matchPageResponse;
     }
 
-    private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document, int matchId) {
+    private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document, Integer matchId) {
         List<String> overResults = getOverResults(document);
         JSONObject matchData = getMatchDataJsonObject(document);
 
@@ -135,6 +136,7 @@ public class CricketExchangeService {
                 }
             }
         }
+        Collections.reverse(overResults);
         return overResults;
     }
 

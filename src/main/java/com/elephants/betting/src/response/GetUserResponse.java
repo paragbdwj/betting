@@ -1,5 +1,6 @@
 package com.elephants.betting.src.response;
 
+import com.elephants.betting.src.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -19,5 +20,5 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetUserResponse {
     private boolean success;
-    private String name;
+    private User user;
 }

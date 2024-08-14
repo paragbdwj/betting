@@ -48,7 +48,13 @@ public class UserService {
     }
 
     public UpdateUserDetailsResponse updateUserDetails(UpdateUserDetailsRequest request) {
-        Optional.ofNullable(request.getMoney()).ifPresent(money -> databaseHelper.updateMoneyInPayout(request.isAddition(), request.getUserId(), request.getMoney()));
+        Optional.ofNullable(request.getMoney()).ifPresent(money -> {
+            try {
+                databaseHelper.updateMoneyInPayout(request.getIsAddition(), request.getUserId(), request.getMoney());
+            } catch (Exception e) {
+                log.error("caught_exception");
+            }
+        });
         return UpdateUserDetailsResponse.builder()
                 .success(true)
                 .build();
@@ -58,7 +64,7 @@ public class UserService {
     public GetUserResponse getUser(GetUserRequest request) {
         User user = databaseHelper.getUserByUserId(request.getUserId());
         return GetUserResponse.builder()
-                .name(user.getUsername())
+                .user(user)
                 .success(true)
                 .build();
     }

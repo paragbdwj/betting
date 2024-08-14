@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.elephants.betting.common.constants.APIConstants.NavBarAPIs.GET_HISTORICAL_TRANSACTIONS;
@@ -28,7 +29,7 @@ public class NavBarController {
     @PostMapping(value = UPDATE_PASSWORD_API,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdatePasswordResponse> getAccountPage(UpdatePasswordRequest request) {
+    public ResponseEntity<UpdatePasswordResponse> getAccountPage(@RequestBody UpdatePasswordRequest request) {
         UpdatePasswordResponse updatePasswordResponse = UpdatePasswordResponse.builder()
                 .success(false)
                 .build();
@@ -50,18 +51,18 @@ public class NavBarController {
     @PostMapping(value = GET_HISTORICAL_TRANSACTIONS,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GetHistoricalTransactionsResponse> getHistoricalTransactions(GetHistoricalTransactionRequest request) {
+    public ResponseEntity<GetHistoricalTransactionsResponse> getHistoricalTransactions(@RequestBody GetHistoricalTransactionRequest request) {
         GetHistoricalTransactionsResponse response = GetHistoricalTransactionsResponse.builder()
                 .success(false)
                 .build();
         HttpStatus httpStatusCode = HttpStatus.OK;
         try {
-            LogUtils.getRequestLog(UPDATE_PASSWORD_API, request);
+            LogUtils.getRequestLog(GET_HISTORICAL_TRANSACTIONS, request);
             response = navBarService.getHistoricalTransactions(request);
-            LogUtils.getResponseLog(UPDATE_PASSWORD_API, response);
+            LogUtils.getResponseLog(GET_HISTORICAL_TRANSACTIONS, response);
         } catch (Exception e) {
             httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-            LogUtils.getExceptionLog(UPDATE_PASSWORD_API, request, e);
+            LogUtils.getExceptionLog(GET_HISTORICAL_TRANSACTIONS, request, e);
         }
         return ResponseEntity.status(httpStatusCode.value()).body(response);
     }

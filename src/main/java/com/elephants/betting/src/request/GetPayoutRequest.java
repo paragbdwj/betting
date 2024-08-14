@@ -1,5 +1,6 @@
 package com.elephants.betting.src.request;
 
+import com.elephants.betting.src.model.Payout;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -17,8 +18,6 @@ import lombok.NoArgsConstructor;
 @JsonNaming(SnakeCaseStrategy.class)
 @JsonInclude(Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateUserDetailsRequest {
-    private Double money;
-    private Boolean isAddition;
+public class GetPayoutRequest {
     private Integer userId;
 }

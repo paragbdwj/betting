@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CricketMoneyRepository extends JpaRepository<CricketMatchOddState, Integer> {
+public interface CricketOddStateManagementRepository extends JpaRepository<CricketMatchOddState, Integer> {
     Optional<CricketMatchOddState> getByMatchId(int matchId);
     List<CricketMatchOddState> findAllByMatchIdIn(List<Integer> matchIds);
 }
