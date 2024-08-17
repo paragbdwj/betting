@@ -98,7 +98,7 @@ public class Scheduler {
 
     @Scheduled(fixedDelay = 100)
     public void cricketOddsRefreshUpdate() {
-        List<Integer> matchIds = matchesToShowOnHomePage.stream().map(CricketMatches::getMatchId).toList();
+        List<Integer> matchIds = matchesToShowOnHomePage.stream().filter(CricketMatches::getIsLiveMatch).map(CricketMatches::getMatchId).toList();
         Map<Integer, CricketMatchOddState> matchIdToCricketMatchOddStateMap = databaseHelper.getAllCricketMoneyByMatchIdList(matchIds).stream().collect(Collectors.toMap(CricketMatchOddState::getMatchId, Function.identity(), (k1, k2) -> k2));
         List<CricketMatchOddState> cricketMatchOddStateList = new ArrayList<>();
         matchIdToMatchPageResponse.values().forEach(matchPageResponse -> {
