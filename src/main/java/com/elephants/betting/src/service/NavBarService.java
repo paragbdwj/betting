@@ -39,7 +39,7 @@ public class NavBarService {
     }
 
     public GetHistoricalTransactionsResponse getHistoricalTransactions(GetHistoricalTransactionRequest request) {
-        List<Payout> payoutList = databaseHelper.getTopNTransactionsByUserId(request.getUserId(), 10);
+        List<Payout> payoutList = databaseHelper.getTop20TransactionsByUserId(request.getUserId());
         return GetHistoricalTransactionsResponse.builder()
                 .success(true)
                 .getHistoricalTransactionList(payoutList.stream().map(payout -> GetHistoricalTransactionsResponse.GetHistoricalTransactionPojo.builder()

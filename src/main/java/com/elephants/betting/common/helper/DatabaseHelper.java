@@ -16,6 +16,7 @@ import com.elephants.betting.src.repository.CricketOddStateManagementRepository;
 import com.elephants.betting.src.repository.PayoutRepository;
 import com.elephants.betting.src.repository.UserRepository;
 import com.elephants.betting.src.request.UpdateOddsRequest;
+import com.elephants.betting.src.response.MatchPageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtilsBean;
@@ -63,7 +64,7 @@ public class DatabaseHelper {
     }
 
     public Payout getOddTransactionPayoutByUserId(Integer userId) {
-        List<Payout> payoutList = payoutRepository.findTopByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, 1));
+        List<Payout> payoutList = payoutRepository.findTopPayoutsByUserIdOrderByCreatedAtDesc(userId, PageRequest.of(0, 1));
         if(payoutList.isEmpty()) {
             throw new PayoutNotFoundException("payout details not found for userId : " + userId);
         }
@@ -148,29 +149,30 @@ public class DatabaseHelper {
 
     public Payout updateMoneyInPayoutBasisRequest(boolean isAddition, UpdateOddsRequest request) {
         Payout payout = getOddTransactionPayoutByUserId(request.getUserId());
-        payout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, request.getMoneyOnStake()));
-        payout.setCreatedAt(LocalDateTime.now());
-        payout.setOdds(request.getOddValue());
-        payout.setMatchDetails(request.getMatchDetails());
-        payout.setOddState(request.getStateName());
-        payout.setMoneyOnStake(request.getMoneyOnStake());
-        payout.setOddTransaction(true);
-        payout.setId(null);
-        payout.setWinningStatus(WinningStatus.WIN.getWinningStatus());
-        payout.setMatchId(request.getMatchId());
-        return savePayout(payout);
+        Payout newPayout = new Payout();
+        newPayout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, request.getMoneyOnStake()));
+        newPayout.setCreatedAt(LocalDateTime.now());
+        newPayout.setOdds(request.getOddValue());
+        newPayout.setMatchDetails(request.getTeamOneName() + "$" + request.getTeamTwoName() + "$" + request.getTeamOneBall() + "$" + request.getTeamTwoBall());
+        newPayout.setOddState(request.getStateName());
+        newPayout.setMoneyOnStake(request.getMoneyOnStake());
+        newPayout.setOddTransaction(true);
+        newPayout.setWinningStatus(WinningStatus.IN_PROGRESS.getWinningStatus());
+        newPayout.setMatchId(request.getMatchId());
+        newPayout.setUserId(payout.getUserId());
+        return savePayout(newPayout);
     }
 
-    public List<Payout> getTopNTransactionsByUserId(int userId, int n) {
-        return payoutRepository.findTopByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true, PageRequest.of(0, n));
+    public List<Payout> getTop20TransactionsByUserId(int userId) {
+        return payoutRepository.findTop20ByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true);
     }
 
-    public List<Payout> findByWinningStatus(String winningStatus) {
+    public List<Payout> findByWinningStatusAndMatchId(int matchId, String winningStatus) {
         int pageNumber = 0, pageSize = 10;
         int maxIntegrity = 10000;
         List<Payout> payoutList = new ArrayList<>();
         while(maxIntegrity-- > 0) {
-            List<Payout> tempPayoutList = payoutRepository.findAllByWinningStatus(winningStatus, PageRequest.of(pageNumber, pageSize));
+            List<Payout> tempPayoutList = payoutRepository.findAllByWinningStatusAndMatchId(winningStatus, matchId, PageRequest.of(pageNumber, pageSize));
             if(CollectionUtils.isEmpty(tempPayoutList)) {
                 break;
             }
@@ -182,5 +184,20 @@ public class DatabaseHelper {
 
     public List<CricketMatches> getAllLiveMatches(){
         return cricketMatchesRepository.findByIsLiveMatch(true);
+    }
+
+    public void setWinningStatusBasisBallStatus(MatchPageResponse matchPageResponse, List<Payout> getPayoutListForWinningStatusInProgress) {
+        // TODO : lastBallResults revisit
+        List<Payout> updatedPayouts = new ArrayList<>();
+        for( Payout payout : getPayoutListForWinningStatusInProgress) {
+            if(StateName.getRunStatusToStateName().getOrDefault(matchPageResponse.getLastBallsResults().get(0), StateName.NULL_STATE).getStateName().equalsIgnoreCase(payout.getOddState())) {
+                payout.setWinningStatus(WinningStatus.WIN.getWinningStatus());
+                payout.setTotalAmount(payout.getTotalAmount() + payout.getMoneyOnStake());
+            } else {
+                payout.setWinningStatus(WinningStatus.LOST.getWinningStatus());
+            }
+            updatedPayouts.add(payout);
+        }
+        payoutRepository.saveAll(updatedPayouts);
     }
 }

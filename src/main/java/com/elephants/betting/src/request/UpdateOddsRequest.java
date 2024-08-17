@@ -23,5 +23,8 @@ public class UpdateOddsRequest {
     private int userId;
     private int matchId;
     private double oddValue;
-    private String matchDetails;
+    private String teamOneName;
+    private String teamTwoName;
+    private String teamOneBall;
+    private String teamTwoBall;
 }

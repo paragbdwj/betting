@@ -1,8 +1,10 @@
 package com.elephants.betting.src.service;
 
 import com.elephants.betting.common.helper.DatabaseHelper;
+import com.elephants.betting.src.enums.WinningStatus;
 import com.elephants.betting.src.model.CricketMatchOddState;
 import com.elephants.betting.src.model.CricketMatches;
+import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.request.HomePageRequest;
 import com.elephants.betting.src.request.MatchPageRequest;
 import com.elephants.betting.src.response.HomePageResponse;
@@ -17,8 +19,12 @@ import org.springframework.util.CollectionUtils;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -28,14 +34,16 @@ import java.util.stream.Collectors;
 @Service
 public class Scheduler {
     @Getter
-    private List<CricketMatches> matchesToShowOnHomePage;
+    private List<CricketMatches> matchesToShowOnHomePage = new ArrayList<>();
     @Getter
-    private Map<Integer, MatchPageResponse> matchIdToMatchPageResponse;
+    private Map<Integer, MatchPageResponse> matchIdToMatchPageResponse = new HashMap<>();
     private final HomePageService homePageService;
     private final CricketExchangeService cricketExchangeService;
     private final DatabaseHelper databaseHelper;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(20);
 
-    @Scheduled(fixedDelay = 100)
+
+    @Scheduled(fixedDelay = 60000)
     public void updateMatchMap() {
         HomePageResponse homePageResponse = null;
         try {
@@ -45,20 +53,47 @@ public class Scheduler {
             return;
         }
         this.matchesToShowOnHomePage = homePageResponse.getMatches();
+        updateCricketMatchOddForNonLive();
         log.info("matchesToShowOnHomePage updated");
     }
 
-    @Scheduled(fixedDelay = 100)
-    public void updateCricketOddStateManagement() {
-        List<Integer> matchIds = matchesToShowOnHomePage.stream().map(CricketMatches::getMatchId).toList();
-        matchIdToMatchPageResponse = matchIds.stream().map(matchId -> {
-            try {
-                return cricketExchangeService.getMatchResult(MatchPageRequest.builder().matchId(matchId).build());
-            } catch (Exception e) {
-                log.error("caught error for matchId : {}",matchId);
-                return MatchPageResponse.builder().matchId(matchId).build();
+    @Scheduled(fixedDelay = 1000)
+    public void updateCricketOddStateManagementLive() {
+        matchesToShowOnHomePage.stream()
+                .filter(match -> Boolean.TRUE.equals(match.getIsLiveMatch()))
+                .forEach(match -> {
+                    CompletableFuture.supplyAsync(() -> updateMatchPageResponseMap(match.getMatchId()), executorService)
+                            .thenAccept(matchPageResponse -> CompletableFuture.runAsync(() -> updateWinningStatusOfUser(matchPageResponse)));
+                });
+    }
+
+    private void updateWinningStatusOfUser(MatchPageResponse matchPageResponse) {
+        List<Payout> getPayoutListForWinningStatusInProgress = databaseHelper.findByWinningStatusAndMatchId(matchPageResponse.getMatchId(), WinningStatus.IN_PROGRESS.getWinningStatus());
+        if(CollectionUtils.isEmpty(getPayoutListForWinningStatusInProgress)) {
+            return;
+        }
+        databaseHelper.setWinningStatusBasisBallStatus(matchPageResponse, getPayoutListForWinningStatusInProgress);
+    }
+
+    private MatchPageResponse updateMatchPageResponseMap(int matchId) {
+        MatchPageResponse matchPageResponse = MatchPageResponse.builder().matchId(matchId).build();
+        try {
+            matchPageResponse  = cricketExchangeService.getMatchResult(MatchPageRequest.builder().matchId(matchId).build());
+            matchIdToMatchPageResponse.put(matchId, matchPageResponse);
+        } catch (IOException e) {
+            log.error("caught error for matchId : {}",matchId);
+            matchIdToMatchPageResponse.put(matchId, matchPageResponse);
+        }
+        return matchPageResponse;
+    }
+
+    public void updateCricketMatchOddForNonLive() {
+        for(CricketMatches cricketMatch : matchesToShowOnHomePage) {
+            if(!cricketMatch.isUpdated() && Boolean.FALSE.equals(cricketMatch.getIsLiveMatch())) {
+                cricketMatch.setUpdated(true);
+                updateMatchPageResponseMap(cricketMatch.getMatchId());
             }
-        }).collect(Collectors.toMap(MatchPageResponse::getMatchId, matchPageResponse -> matchPageResponse, (k1, k2) -> k1));
+        }
     }
 
     @Scheduled(fixedDelay = 100)
@@ -66,7 +101,7 @@ public class Scheduler {
         List<Integer> matchIds = matchesToShowOnHomePage.stream().map(CricketMatches::getMatchId).toList();
         Map<Integer, CricketMatchOddState> matchIdToCricketMatchOddStateMap = databaseHelper.getAllCricketMoneyByMatchIdList(matchIds).stream().collect(Collectors.toMap(CricketMatchOddState::getMatchId, Function.identity(), (k1, k2) -> k2));
         List<CricketMatchOddState> cricketMatchOddStateList = new ArrayList<>();
-        matchIdToMatchPageResponse.values().stream().forEach(matchPageResponse -> {
+        matchIdToMatchPageResponse.values().forEach(matchPageResponse -> {
             Integer matchId = matchPageResponse.getMatchId();
             CricketMatchOddState newCricketMatchOddState = new CricketMatchOddState();
             String lastBallRun = CollectionUtils.isEmpty(matchPageResponse.getLastBallsResults()) ?"-1" : matchPageResponse.getLastBallsResults().get(0);

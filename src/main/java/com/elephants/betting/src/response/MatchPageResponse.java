@@ -21,11 +21,13 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MatchPageResponse {
     private Integer matchId;
-    private List<String> lastBallsResults;
+    private List<String> lastBallsResults;  //
     private String teamOneName;
     private String teamTwoName;
     private String teamOneScore;
     private String teamTwoScore;
     private String oversByTeamOne;
     private String oversByTeamTwo;
+    private String teamOneSymbol;
+    private String teamTwoSymbol;
 }

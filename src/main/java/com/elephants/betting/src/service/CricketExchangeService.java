@@ -9,6 +9,7 @@ import com.elephants.betting.src.response.MatchPageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.elephants.betting.common.constants.APIConstants.ThirdPartyAPIs.CRIC_EXCHANGE_API_URL;
 import static com.elephants.betting.common.constants.VarConstants.NULL_STRING;
@@ -94,7 +97,7 @@ public class CricketExchangeService {
     private void setMatchResultResponse(MatchPageResponse matchPageResponse, Document document, Integer matchId) {
         List<String> overResults = getOverResults(document);
         JSONObject matchData = getMatchDataJsonObject(document);
-
+        Pair<String, String> teamSymbols = getTeamSymbols(document);
         // Extract team names and scores
         matchPageResponse.setTeamOneName(getValueOrDefault(matchData, "team1_f_n", NULL_STRING));
         matchPageResponse.setTeamOneScore(getValueOrDefault(matchData, "score1", NULL_STRING));
@@ -103,7 +106,37 @@ public class CricketExchangeService {
         matchPageResponse.setOversByTeamOne(getValueOrDefault(matchData, "over1", NULL_STRING));
         matchPageResponse.setOversByTeamTwo(getValueOrDefault(matchData, "over2", NULL_STRING));
         matchPageResponse.setMatchId(matchId);
+        matchPageResponse.setTeamOneSymbol(teamSymbols.getLeft());
+        matchPageResponse.setTeamTwoSymbol(teamSymbols.getRight());
         matchPageResponse.setLastBallsResults(overResults);
+    }
+
+    private Pair<String, String> getTeamSymbols(Document document) {
+        Element metaElement = document.select("meta[name=keywords]").first();
+        String teamOne = null, teamTwo = null;
+        if (metaElement != null) {
+            String content = metaElement.attr("content");
+
+            // Use regex to extract BOL and RMR
+            Pattern pattern = Pattern.compile("(\\b[A-Z]{3}\\b)");
+            Matcher matcher = pattern.matcher(content);
+            List<String> teams = new ArrayList<>();
+            while (matcher.find()) {
+                teams.add(matcher.group(1));
+            }
+
+            // Assuming BOL is the first and RMR is the second match data
+            if (teams.size() >= 2) {
+                teamOne = teams.get(0); // BOL
+                teamTwo = teams.get(1); // RMR
+
+                System.out.println("Team One: " + teamOne);
+                System.out.println("Team Two: " + teamTwo);
+
+                // Now you can use teamOne and teamTwo as needed
+            }
+        }
+        return Pair.of(teamOne, teamTwo);
     }
 
     private String getValueOrDefault(JSONObject jsonObject, String key, String defaultValue) {

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PayoutRepository extends JpaRepository<Payout, Integer> {
-    List<Payout> findAllByWinningStatus(String winningStatus, Pageable pageable);
-    List<Payout> findTopByUserIdAndIsOddTransactionOrderByCreatedAtDesc(int userId, boolean oddTransaction, Pageable pageable);
+    List<Payout> findAllByWinningStatusAndMatchId(String winningStatus,int matchId, Pageable pageable);
+    List<Payout> findTop20ByUserIdAndIsOddTransactionOrderByCreatedAtDesc(int userId, boolean oddTransaction);
     List<Payout> findTopPayoutsByUserIdOrderByCreatedAtDesc(int userId, Pageable pageable);
 }
