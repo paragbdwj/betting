@@ -3,9 +3,9 @@ spring:
     name: betting-application
 
   datasource:
-    url: jdbc:mysql://root:VXrjgkVKJwiIwqpKmSIfETbjNaMQRUQQ@mysql.railway.internal:3306/railway
+    url: jdbc:mysql://root:BXZrBiIhPlsbCictwsTPIVdgUuBOLAsu@autorack.proxy.rlwy.net:40309/railway
     username: root
-    password: VXrjgkVKJwiIwqpKmSIfETbjNaMQRUQQ
+    password: BXZrBiIhPlsbCictwsTPIVdgUuBOLAsu
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
