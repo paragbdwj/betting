@@ -1,5 +1,6 @@
 package com.elephants.betting.src.service;
 
+import com.elephants.betting.src.enums.WinningStatus;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
 import com.elephants.betting.src.request.OnboardNewUserRequest;
@@ -39,6 +40,7 @@ public class OnboardNewUserService {
                         .totalAmount(request.getMoney())
                         .isOddTransaction(false)
                         .createdAt(LocalDateTime.now())
+                        .winningStatus(WinningStatus.UNDEFINED)
                 .build());
     }
 

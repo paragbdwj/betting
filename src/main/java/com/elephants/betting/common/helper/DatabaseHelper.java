@@ -131,6 +131,7 @@ public class DatabaseHelper {
         payout.setTotalAmount(updateMoney(payout.getTotalAmount(), isAddition, money));
         payout.setOddTransaction(false);
         payout.setCreatedAt(LocalDateTime.now());
+        payout.setWinningStatus(WinningStatus.UNDEFINED);
         return savePayout(payout);
     }
 

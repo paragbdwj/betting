@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum WinningStatus {
     WIN("win"),
     LOST("lost"),
-    IN_PROGRESS("in_progress");
+    IN_PROGRESS("in_progress"),
+    UNDEFINED("undefined");
 
     private final String winningStatus;
     WinningStatus(String winningStatus) {

@@ -37,7 +37,7 @@ public class Payout {
     @Column(name = "total_amount", nullable = false)
     private Double totalAmount;  // by default to be set true
 
-    @Column(name = "odd_state", nullable = false)
+    @Column(name = "odd_state", nullable = true)
     private String oddState;
 
     @Column(name = "match-details")
@@ -49,7 +49,7 @@ public class Payout {
     @Column(name = "money_on_stake")
     private double moneyOnStake;
 
-    @Column(name = "winning_status", nullable = false)
+    @Column(name = "winning_status")
     private WinningStatus winningStatus;
 
     @Column(name = "created_at")
