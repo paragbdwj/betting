@@ -29,7 +29,7 @@ public class CricExchangeResponse {
     @JsonInclude(Include.NON_NULL)
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CricExchangeAttributes {
-        private String teamOne;
+        private String teamOne; // These are symbols
         private String teamTwo;
         private String teamOneScore;
         private String teamTwoScore;
@@ -38,5 +38,6 @@ public class CricExchangeResponse {
         private String teamOneOvers;
         private String teamTwoOvers;
         private String upcomingTime;
+        private String currentTeam; // outcome will be team_one or team_two
     }
 }

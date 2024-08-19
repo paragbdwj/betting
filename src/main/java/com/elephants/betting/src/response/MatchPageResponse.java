@@ -30,4 +30,5 @@ public class MatchPageResponse {
     private String oversByTeamTwo;
     private String teamOneSymbol;
     private String teamTwoSymbol;
+    private String previousOverScore;
 }

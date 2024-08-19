@@ -1,5 +1,6 @@
 package com.elephants.betting.src.response;
 
+import com.elephants.betting.src.enums.WinningStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -37,6 +38,6 @@ public class GetHistoricalTransactionsResponse {
         private double moneyOnStake;
         private double odd;
         private String oddState;
-        private String stateOfWinning;
+        private WinningStatus stateOfWinning;
     }
 }

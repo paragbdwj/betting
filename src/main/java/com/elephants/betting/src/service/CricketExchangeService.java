@@ -42,7 +42,11 @@ public class CricketExchangeService {
 
         Elements liveCards = doc.select(".live-card.height100");
         for (Element liveCard : liveCards) {
-            buildCricExchangeAttributesMap(liveCard);
+            try {
+                buildCricExchangeAttributesMap(liveCard);
+            } catch (Exception e) {
+                log.error("Caught error");
+            }
         }
 
         return CricExchangeResponse.builder()
@@ -52,6 +56,24 @@ public class CricketExchangeService {
     }
 
     private void buildCricExchangeAttributesMap(Element liveCard) {
+        Elements teamScoresForDiv = liveCard.select("div.team-score");
+        String teamSymbolPlaying = "null";
+        try {
+            for (Element teamScore : teamScoresForDiv) {
+                // Extract the team symbol (e.g., SDS or PDL)
+                String teamSymbol = teamScore.select("span.live-c, span.live-d").text();
+                // Check if the score contains an asterisk (*)
+                Elements scoreElements = teamScore.select("span.match-score");
+                for (Element scoreElement : scoreElements) {
+                    if (scoreElement.html().contains("*")) {
+                        teamSymbolPlaying = getTeamSymbolFromRawString(teamSymbol);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("caught exception in buildCricExchangeAttributesMap");
+        }
+
         Elements teamScores = liveCard.select(".team-score");
         Elements anchors = liveCard.select("a[href]");
         Element liveTagElement = liveCard.selectFirst("span.liveTag");
@@ -82,7 +104,20 @@ public class CricketExchangeService {
                 .teamOneScore(teamScores.get(0).select("span").get(2).text())
                 .teamTwoScore(teamScores.get(1).select("span").get(2).text())
                 .upcomingTime(Objects.requireNonNull(liveCard.select("span.upcomingTime")).attr("title"))
+                .currentTeam(teamSymbolPlaying.equalsIgnoreCase(teamOne)?"team_one":"team_two")
                 .build());
+    }
+
+    private String getTeamSymbolFromRawString(String teamSymbol) {
+        char[] chars = teamSymbol.toCharArray();
+        int i = 0;
+        StringBuilder teamSymbolRawString = new StringBuilder();
+        while(i < Math.min(chars.length, 10) && chars[i] != ' ') {
+            teamSymbolRawString.append(chars[i]);
+            i++;
+        }
+        String rawTeamSymbol = teamSymbolRawString.toString();
+        return rawTeamSymbol;
     }
 
     public MatchPageResponse getMatchResult(MatchPageRequest request) throws IOException{
@@ -115,26 +150,38 @@ public class CricketExchangeService {
         Element metaElement = document.select("meta[name=keywords]").first();
         String teamOne = null, teamTwo = null;
         if (metaElement != null) {
-            String content = metaElement.attr("content");
+            String input = metaElement.attr("content");
 
             // Use regex to extract BOL and RMR
-            Pattern pattern = Pattern.compile("(\\b[A-Z]{3}\\b)");
-            Matcher matcher = pattern.matcher(content);
-            List<String> teams = new ArrayList<>();
-            while (matcher.find()) {
-                teams.add(matcher.group(1));
+
+            int i = 0;
+            int start = 0;
+            int count = 0;
+
+            while (i < input.length() && count < 2) {
+                // Find the start of the team symbol (a capital letter)
+                while (i < input.length() && !Character.isUpperCase(input.charAt(i))) {
+                    i++;
+                }
+
+                start = i;
+
+                // Find the end of the team symbol (either space or a non-capital letter)
+                while (i < input.length() && (Character.isUpperCase(input.charAt(i)) || Character.isDigit(input.charAt(i)))) {
+                    i++;
+                }
+
+                if (count == 0 && start < i) {
+                    teamOne = input.substring(start, i);
+                    count++;
+                } else if (count == 1 && start < i) {
+                    teamTwo = input.substring(start, i);
+                    count++;
+                }
+
+                i++;
             }
 
-            // Assuming BOL is the first and RMR is the second match data
-            if (teams.size() >= 2) {
-                teamOne = teams.get(0); // BOL
-                teamTwo = teams.get(1); // RMR
-
-                System.out.println("Team One: " + teamOne);
-                System.out.println("Team Two: " + teamTwo);
-
-                // Now you can use teamOne and teamTwo as needed
-            }
         }
         return Pair.of(teamOne, teamTwo);
     }

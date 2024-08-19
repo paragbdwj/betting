@@ -13,7 +13,7 @@ public class HomePageServiceNew {
     private final Scheduler scheduler;
         public HomePageResponse getHomePageAPI(HomePageRequest request) {
             return HomePageResponse.builder()
-                    .matches(scheduler.getMatchesToShowOnHomePage())
+                    .matches(scheduler.getMatchesToShowOnHomePage().stream().sorted((a,b)-> Boolean.compare(b.getIsLiveMatch(), a.getIsLiveMatch())).toList())
                     .build();
         }
 }

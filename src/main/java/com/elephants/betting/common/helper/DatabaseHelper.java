@@ -27,7 +27,10 @@ import org.springframework.util.CollectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -136,6 +139,9 @@ public class DatabaseHelper {
     }
 
     public List<CricketMatchOddState> saveAllCricketMatchStateOddManagement(List<CricketMatchOddState> cricketMatchOddStateList) {
+        for (CricketMatchOddState cricketMatchOddState : cricketMatchOddStateList) {
+            cricketMatchOddState.setCreatedAt(LocalDateTime.now());
+        }
         return cricketOddStateManagementRepository.saveAll(cricketMatchOddStateList);
     }
 
@@ -157,7 +163,7 @@ public class DatabaseHelper {
         newPayout.setOddState(request.getStateName());
         newPayout.setMoneyOnStake(request.getMoneyOnStake());
         newPayout.setOddTransaction(true);
-        newPayout.setWinningStatus(WinningStatus.IN_PROGRESS.getWinningStatus());
+        newPayout.setWinningStatus(WinningStatus.IN_PROGRESS);
         newPayout.setMatchId(request.getMatchId());
         newPayout.setUserId(payout.getUserId());
         return savePayout(newPayout);
@@ -167,7 +173,7 @@ public class DatabaseHelper {
         return payoutRepository.findTop20ByUserIdAndIsOddTransactionOrderByCreatedAtDesc(userId, true);
     }
 
-    public List<Payout> findByWinningStatusAndMatchId(int matchId, String winningStatus) {
+    public List<Payout> findByWinningStatusAndMatchId(int matchId, WinningStatus winningStatus) {
         int pageNumber = 0, pageSize = 10;
         int maxIntegrity = 10000;
         List<Payout> payoutList = new ArrayList<>();
@@ -187,17 +193,31 @@ public class DatabaseHelper {
     }
 
     public void setWinningStatusBasisBallStatus(MatchPageResponse matchPageResponse, List<Payout> getPayoutListForWinningStatusInProgress) {
-        // TODO : lastBallResults revisit
         List<Payout> updatedPayouts = new ArrayList<>();
-        for( Payout payout : getPayoutListForWinningStatusInProgress) {
-            if(StateName.getRunStatusToStateName().getOrDefault(matchPageResponse.getLastBallsResults().get(0), StateName.NULL_STATE).getStateName().equalsIgnoreCase(payout.getOddState())) {
-                payout.setWinningStatus(WinningStatus.WIN.getWinningStatus());
-                payout.setTotalAmount(payout.getTotalAmount() + payout.getMoneyOnStake());
-            } else {
-                payout.setWinningStatus(WinningStatus.LOST.getWinningStatus());
+        Map<Integer, List<Payout>> userIdToPayoutList = getUserIdToPayoutList(getPayoutListForWinningStatusInProgress);
+        for(Integer userId : userIdToPayoutList.keySet()) {
+            List<Payout> payouts = userIdToPayoutList.get(userId).stream().sorted((a,b) -> b.getCreatedAt().compareTo(a.getCreatedAt())).toList();
+            for(Payout payout : payouts) {
+                if (StateName.getRunStatusToStateName().getOrDefault(matchPageResponse.getLastBallsResults().get(0), StateName.NULL_STATE).getStateName().equalsIgnoreCase(payout.getOddState())) {
+                    payout.setWinningStatus(WinningStatus.WIN  );
+                    payout.setTotalAmount(payouts.get(0).getTotalAmount() + payout.getOdds() * payout.getMoneyOnStake());
+                    payout.setCreatedAt(LocalDateTime.now());
+                } else {
+                    payout.setWinningStatus(WinningStatus.LOST  );
+                }
             }
-            updatedPayouts.add(payout);
+            updatedPayouts.addAll(payouts);
         }
         payoutRepository.saveAll(updatedPayouts);
+    }
+
+    private Map<Integer, List<Payout>> getUserIdToPayoutList(List<Payout> getPayoutListForWinningStatusInProgress) {
+        Map<Integer, List<Payout>> userIdToPayout = new HashMap<>();
+        for(Payout payout : getPayoutListForWinningStatusInProgress) {
+            List<Payout> payoutList = userIdToPayout.getOrDefault(payout.getUserId(), new ArrayList<>());
+            payoutList.add(payout);
+            userIdToPayout.put(payout.getUserId(), payoutList);
+        }
+        return userIdToPayout;
     }
 }

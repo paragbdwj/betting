@@ -78,7 +78,8 @@ public class HomePageService {
                 cricketMatches.setMatchId(urlToCricketMatchesMap.get(cricketMatches.getUrl()).getMatchId());
             }
         }
-        return databaseHelper.saveAllCricketMatches(cricketMatchesList);
+        databaseHelper.saveAllCricketMatches(cricketMatchesList);
+        return cricketMatchesList;
     }
 
     private Map<String, CricketMatches> createUrlToCricketMatchesMap(List<CricketMatches> cricketMatchesList) {
@@ -103,6 +104,7 @@ public class HomePageService {
                                 .teamOneOvers(cricExchangeAttributes.getTeamOneOvers())
                                 .teamTwoOvers(cricExchangeAttributes.getTeamTwoOvers())
                                 .upcomingTime(cricExchangeAttributes.getUpcomingTime())
+                                .currentTeam(cricExchangeAttributes.getCurrentTeam())
                                 .build()).toList();
     }
 

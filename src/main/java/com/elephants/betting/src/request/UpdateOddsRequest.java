@@ -27,4 +27,5 @@ public class UpdateOddsRequest {
     private String teamTwoName;
     private String teamOneBall;
     private String teamTwoBall;
+    /* above is the snapshot of jis point of time par lage the */
 }

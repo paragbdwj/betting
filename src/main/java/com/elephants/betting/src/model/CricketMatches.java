@@ -74,4 +74,7 @@ public class CricketMatches {
 
     @Transient
     private boolean isUpdated = false;
+
+    @Transient
+    private String currentTeam; // te
 }

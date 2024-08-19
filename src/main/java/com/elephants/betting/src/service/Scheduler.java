@@ -40,15 +40,15 @@ public class Scheduler {
     private final HomePageService homePageService;
     private final CricketExchangeService cricketExchangeService;
     private final DatabaseHelper databaseHelper;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(20);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(50);
 
 
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 300000)
     public void updateMatchMap() {
         HomePageResponse homePageResponse = null;
         try {
             homePageResponse = homePageService.getHomePage(HomePageRequest.builder().build());
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("getting error in updateMatchMap");
             return;
         }
@@ -61,14 +61,11 @@ public class Scheduler {
     public void updateCricketOddStateManagementLive() {
         matchesToShowOnHomePage.stream()
                 .filter(match -> Boolean.TRUE.equals(match.getIsLiveMatch()))
-                .forEach(match -> {
-                    CompletableFuture.supplyAsync(() -> updateMatchPageResponseMap(match.getMatchId()), executorService)
-                            .thenAccept(matchPageResponse -> CompletableFuture.runAsync(() -> updateWinningStatusOfUser(matchPageResponse)));
-                });
+                .forEach(match -> CompletableFuture.supplyAsync(() -> updateMatchPageResponseMap(match.getMatchId()), executorService));
     }
 
     private void updateWinningStatusOfUser(MatchPageResponse matchPageResponse) {
-        List<Payout> getPayoutListForWinningStatusInProgress = databaseHelper.findByWinningStatusAndMatchId(matchPageResponse.getMatchId(), WinningStatus.IN_PROGRESS.getWinningStatus());
+        List<Payout> getPayoutListForWinningStatusInProgress = databaseHelper.findByWinningStatusAndMatchId(matchPageResponse.getMatchId(), WinningStatus.IN_PROGRESS  );
         if(CollectionUtils.isEmpty(getPayoutListForWinningStatusInProgress)) {
             return;
         }
@@ -99,19 +96,25 @@ public class Scheduler {
     @Scheduled(fixedDelay = 100)
     public void cricketOddsRefreshUpdate() {
         List<Integer> matchIds = matchesToShowOnHomePage.stream().filter(CricketMatches::getIsLiveMatch).map(CricketMatches::getMatchId).toList();
+        Map<Integer, CricketMatches> matchIdToCricketMatchesResponse = matchesToShowOnHomePage.stream().collect(Collectors.toMap(CricketMatches::getMatchId, Function.identity()));
         Map<Integer, CricketMatchOddState> matchIdToCricketMatchOddStateMap = databaseHelper.getAllCricketMoneyByMatchIdList(matchIds).stream().collect(Collectors.toMap(CricketMatchOddState::getMatchId, Function.identity(), (k1, k2) -> k2));
         List<CricketMatchOddState> cricketMatchOddStateList = new ArrayList<>();
         matchIdToMatchPageResponse.values().forEach(matchPageResponse -> {
             Integer matchId = matchPageResponse.getMatchId();
+            if(!matchIds.contains(matchId)) {
+                return;
+            }
             CricketMatchOddState newCricketMatchOddState = new CricketMatchOddState();
-            String lastBallRun = CollectionUtils.isEmpty(matchPageResponse.getLastBallsResults()) ?"-1" : matchPageResponse.getLastBallsResults().get(0);
+            String ballState = newCricketMatchOddState.getBallState();
             if(matchIdToCricketMatchOddStateMap.containsKey(matchId)) {
                 newCricketMatchOddState = matchIdToCricketMatchOddStateMap.get(matchId);
-                if(!lastBallRun.equalsIgnoreCase(newCricketMatchOddState.getRunResult())) {
-                    setState(newCricketMatchOddState, lastBallRun);
+                String currentBallState = getCurrentBallState(matchPageResponse, matchIdToCricketMatchesResponse, matchId);
+                if(!currentBallState.equalsIgnoreCase(newCricketMatchOddState.getBallState())) {
+                    setState(newCricketMatchOddState, currentBallState);
+                    CompletableFuture.runAsync(() -> updateWinningStatusOfUser(matchPageResponse), executorService);
                 }
             } else {
-                setState(newCricketMatchOddState, lastBallRun);
+                setState(newCricketMatchOddState, ballState);
                 newCricketMatchOddState.setMatchId(matchId);
             }
             cricketMatchOddStateList.add(newCricketMatchOddState);
@@ -119,8 +122,17 @@ public class Scheduler {
         databaseHelper.saveAllCricketMatchStateOddManagement(cricketMatchOddStateList);
     }
 
-    private void setState(CricketMatchOddState newCricketMatchOddState, String lastBallRun) {
-        newCricketMatchOddState.setRunResult(lastBallRun);
+    private String getCurrentBallState(MatchPageResponse matchPageResponse, Map<Integer, CricketMatches> matchIdToCricketMatchesResponse, int matchId) {
+        String currentTeam =  matchIdToCricketMatchesResponse.get(matchId).getCurrentTeam();
+        if("team_one".equalsIgnoreCase(currentTeam)) {
+            return matchPageResponse.getOversByTeamOne();
+        } else {
+            return matchPageResponse.getOversByTeamTwo();
+        }
+    }
+
+    private void setState(CricketMatchOddState newCricketMatchOddState, String ballState) {
+        newCricketMatchOddState.setBallState(ballState);
         newCricketMatchOddState.setRunZeroMoney(1.0);
         newCricketMatchOddState.setRunOneMoney(1.0);
         newCricketMatchOddState.setRunTwoMoney(1.0);
