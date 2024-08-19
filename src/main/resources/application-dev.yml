@@ -23,3 +23,7 @@ spring:
 inhouse:
   cut:
     percentage: 0.7
+
+allowed:
+  origins:
+    ${ALLOWED_ORIGINS:http://localhost:3000}
