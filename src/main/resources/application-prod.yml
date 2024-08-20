@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
 
 # stake-related properties
 inhouse:
