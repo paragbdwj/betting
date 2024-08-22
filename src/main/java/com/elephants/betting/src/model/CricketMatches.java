@@ -73,6 +73,12 @@ public class CricketMatches {
     private LocalDateTime updatedAt;
 
     @Transient
+    private String teamOneFlag;
+
+    @Transient
+    private String teamTwoFlag;
+
+    @Transient
     private boolean isUpdated = false;
 
     @Transient

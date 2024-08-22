@@ -37,6 +37,8 @@ public class CricExchangeResponse {
         private boolean isLiveMatch;
         private String teamOneOvers;
         private String teamTwoOvers;
+        private String teamOneFlag;
+        private String teamTwoFlag;
         private String upcomingTime;
         private String currentTeam; // outcome will be team_one or team_two
     }

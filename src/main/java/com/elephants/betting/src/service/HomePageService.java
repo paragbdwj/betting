@@ -105,6 +105,8 @@ public class HomePageService {
                                 .teamTwoOvers(cricExchangeAttributes.getTeamTwoOvers())
                                 .upcomingTime(cricExchangeAttributes.getUpcomingTime())
                                 .currentTeam(cricExchangeAttributes.getCurrentTeam())
+                                .teamOneFlag(cricExchangeAttributes.getTeamOneFlag())
+                                .teamTwoFlag(cricExchangeAttributes.getTeamTwoFlag())
                                 .build()).toList();
     }
 

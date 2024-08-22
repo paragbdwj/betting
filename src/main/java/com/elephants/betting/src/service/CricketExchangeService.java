@@ -58,10 +58,22 @@ public class CricketExchangeService {
     private void buildCricExchangeAttributesMap(Element liveCard) {
         Elements teamScoresForDiv = liveCard.select("div.team-score");
         String teamSymbolPlaying = "null";
+        String teamOneFlagUrl = null, teamTwoFlagUrl = null;
         try {
             for (Element teamScore : teamScoresForDiv) {
                 // Extract the team symbol (e.g., SDS or PDL)
                 String teamSymbol = teamScore.select("span.live-c, span.live-d").text();
+                Elements imgElements = teamScore.select("img");
+                if (!imgElements.isEmpty()) {
+                    String imgUrl = imgElements.attr("src");
+
+                    // Assign the correct flag URL to the corresponding team
+                    if (teamSymbolPlaying.equals("null")) {
+                        teamOneFlagUrl = imgUrl;
+                    } else {
+                        teamTwoFlagUrl = imgUrl;
+                    }
+                }
                 // Check if the score contains an asterisk (*)
                 Elements scoreElements = teamScore.select("span.match-score");
                 for (Element scoreElement : scoreElements) {
@@ -103,6 +115,8 @@ public class CricketExchangeService {
                 .teamTwoOvers(teamTwoOvers)
                 .teamOneScore(teamScores.get(0).select("span").get(2).text())
                 .teamTwoScore(teamScores.get(1).select("span").get(2).text())
+                .teamOneFlag(teamOneFlagUrl)
+                .teamTwoFlag(teamTwoFlagUrl)
                 .upcomingTime(Objects.requireNonNull(liveCard.select("span.upcomingTime")).attr("title"))
                 .currentTeam(teamSymbolPlaying.equalsIgnoreCase(teamOne)?"team_one":"team_two")
                 .build());
