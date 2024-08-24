@@ -133,14 +133,14 @@ public class Scheduler {
 
     private void setState(CricketMatchOddState newCricketMatchOddState, String ballState) {
         newCricketMatchOddState.setBallState(ballState);
-        newCricketMatchOddState.setRunZeroMoney(1.0);
-        newCricketMatchOddState.setRunOneMoney(1.0);
-        newCricketMatchOddState.setRunTwoMoney(1.0);
-        newCricketMatchOddState.setRunThreeMoney(1.0);
-        newCricketMatchOddState.setRunFourMoney(1.0);
-        newCricketMatchOddState.setRunFiveMoney(1.0);
-        newCricketMatchOddState.setRunSixMoney(1.0);
-        newCricketMatchOddState.setWicketMoney(1.0);
+        newCricketMatchOddState.setRunZeroMoney(100.0);
+        newCricketMatchOddState.setRunOneMoney(100.0);
+        newCricketMatchOddState.setRunTwoMoney(100.0);
+        newCricketMatchOddState.setRunThreeMoney(100.0);
+        newCricketMatchOddState.setRunFourMoney(100.0);
+        newCricketMatchOddState.setRunFiveMoney(100.0);
+        newCricketMatchOddState.setRunSixMoney(100.0);
+        newCricketMatchOddState.setWicketMoney(100.0);
         newCricketMatchOddState.setUpdatedAt(LocalDateTime.now());
     }
 }
