@@ -25,7 +25,7 @@ public class OddsService {
     }
 
     private GiveOddsResponse calculateOddsBasisMoney(CricketMatchOddState cricketMatchOddState) {
-        double totalMoneyAfterCut = getTotalMoney(cricketMatchOddState) * (1 - applicationProperties.getInHouseCutPercentage());
+        double totalMoneyAfterCut = getTotalMoney(cricketMatchOddState) * (1 - applicationProperties.getInHouseCutRatio());
         return GiveOddsResponse.builder()
                 .runZeroOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunZeroMoney()))
                 .runOneOdds(MathUtils.roundOffToTwoDecimalPlaces(totalMoneyAfterCut/ cricketMatchOddState.getRunOneMoney()))

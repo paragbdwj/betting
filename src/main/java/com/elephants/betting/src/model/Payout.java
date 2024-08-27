@@ -58,6 +58,12 @@ public class Payout {
     @Column(name = "match_id")
     private int matchId;
 
+    @Column(name = "exposure", nullable = false)
+    private double exposure;
+
+    @Column(name = "chips", nullable = false)
+    private double chips;
+
     @Column(name = "is_odd_transaction", nullable = false)
     private boolean isOddTransaction = false;
 }

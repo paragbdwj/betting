@@ -1,5 +1,6 @@
 package com.elephants.betting.src.service;
 
+import com.elephants.betting.common.constants.ApplicationProperties;
 import com.elephants.betting.src.enums.WinningStatus;
 import com.elephants.betting.src.model.Payout;
 import com.elephants.betting.src.model.User;
@@ -19,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class OnboardNewUserService {
     private final DatabaseHelper databaseHelper;
+    private final ApplicationProperties applicationProperties;
     /*
          1. This will return username and password
          2. user_name length should be greater than 4
@@ -37,11 +39,16 @@ public class OnboardNewUserService {
     private void saveMoneyInPayout(User user, OnboardNewUserRequest request) {
         databaseHelper.savePayout(Payout.builder()
                         .userId(user.getId())
-                        .totalAmount(request.getMoney())
+                        .totalAmount(MoneyWithBonusIncluded(request.getMoney()))
                         .isOddTransaction(false)
                         .createdAt(LocalDateTime.now())
                         .winningStatus(WinningStatus.UNDEFINED)
+                        .chips(request.getMoney())
                 .build());
+    }
+
+    private Double MoneyWithBonusIncluded(Double money) {
+        return (1 + applicationProperties.getBonusMoneyRatio()) * money;
     }
 
     private OnboardNewUserResponse buildResponse(User user) {

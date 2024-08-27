@@ -132,6 +132,7 @@ public class DatabaseHelper {
         payout.setOddTransaction(false);
         payout.setCreatedAt(LocalDateTime.now());
         payout.setWinningStatus(WinningStatus.UNDEFINED);
+        payout.setChips(updateMoney(payout.getChips(), isAddition, money));
         return savePayout(payout);
     }
 
@@ -167,6 +168,7 @@ public class DatabaseHelper {
         newPayout.setWinningStatus(WinningStatus.IN_PROGRESS);
         newPayout.setMatchId(request.getMatchId());
         newPayout.setUserId(payout.getUserId());
+        newPayout.setExposure(updateMoney(payout.getExposure(), !isAddition, request.getMoneyOnStake()));
         return savePayout(newPayout);
     }
 

@@ -29,7 +29,7 @@ public class NavBarController {
     @PostMapping(value = UPDATE_PASSWORD_API,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UpdatePasswordResponse> getAccountPage(@RequestBody UpdatePasswordRequest request) {
+    public ResponseEntity<UpdatePasswordResponse> updatePassword(@RequestBody UpdatePasswordRequest request) {
         UpdatePasswordResponse updatePasswordResponse = UpdatePasswordResponse.builder()
                 .success(false)
                 .build();
@@ -39,7 +39,7 @@ public class NavBarController {
             updatePasswordResponse = navBarService.updatePassword(request);
             LogUtils.getResponseLog(UPDATE_PASSWORD_API, updatePasswordResponse);
         } catch (WrongCredentialsException e) {
-            httpStatusCode = HttpStatus.BAD_REQUEST;
+            httpStatusCode = HttpStatus.OK;
             LogUtils.getWrongCredentialsExceptionLog(UPDATE_PASSWORD_API, request, e);
         } catch (Exception e) {
             httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 public class ApplicationProperties {
-    @Value("${inhouse.cut.percentage}")
-    private double inHouseCutPercentage;
+    @Value("${inhouse.cut.ratio}")
+    private double inHouseCutRatio;
+
+    @Value("${bonus.money.ratio}")
+    private double bonusMoneyRatio;
 }
