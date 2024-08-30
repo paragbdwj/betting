@@ -107,6 +107,7 @@ public class HomePageService {
                                 .currentTeam(cricExchangeAttributes.getCurrentTeam())
                                 .teamOneFlag(cricExchangeAttributes.getTeamOneFlag())
                                 .teamTwoFlag(cricExchangeAttributes.getTeamTwoFlag())
+                                .isTestMatch(cricExchangeAttributes.isTestMatch())
                                 .build()).toList();
     }
 

@@ -59,7 +59,12 @@ public class CricketExchangeService {
         Elements teamScoresForDiv = liveCard.select("div.team-score");
         String teamSymbolPlaying = "null";
         String teamOneFlagUrl = null, teamTwoFlagUrl = null;
+        boolean isTestMatch = false;
         try {
+            String matchType = liveCard.select("h3.match-number").text();
+            if (matchType.contains("TEST")) {
+                isTestMatch = true;
+            }
             for (Element teamScore : teamScoresForDiv) {
                 // Extract the team symbol (e.g., SDS or PDL)
                 String teamSymbol = teamScore.select("span.live-c, span.live-d").text();
@@ -119,6 +124,7 @@ public class CricketExchangeService {
                 .teamTwoFlag(teamTwoFlagUrl)
                 .upcomingTime(Objects.requireNonNull(liveCard.select("span.upcomingTime")).attr("title"))
                 .currentTeam(teamSymbolPlaying.equalsIgnoreCase(teamOne)?"team_one":"team_two")
+                .isTestMatch(isTestMatch)
                 .build());
     }
 
