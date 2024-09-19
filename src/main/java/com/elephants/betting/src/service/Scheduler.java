@@ -12,6 +12,7 @@ import com.elephants.betting.src.response.MatchPageResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -100,24 +101,28 @@ public class Scheduler {
         Map<Integer, CricketMatchOddState> matchIdToCricketMatchOddStateMap = databaseHelper.getAllCricketMoneyByMatchIdList(matchIds).stream().collect(Collectors.toMap(CricketMatchOddState::getMatchId, Function.identity(), (k1, k2) -> k2));
         List<CricketMatchOddState> cricketMatchOddStateList = new ArrayList<>();
         matchIdToMatchPageResponse.values().forEach(matchPageResponse -> {
-            Integer matchId = matchPageResponse.getMatchId();
-            if(!matchIds.contains(matchId)) {
-                return;
-            }
-            CricketMatchOddState newCricketMatchOddState = new CricketMatchOddState();
-            String ballState = newCricketMatchOddState.getBallState();
-            if(matchIdToCricketMatchOddStateMap.containsKey(matchId)) {
-                newCricketMatchOddState = matchIdToCricketMatchOddStateMap.get(matchId);
-                String currentBallState = getCurrentBallState(matchPageResponse, matchIdToCricketMatchesResponse, matchId);
-                if(!currentBallState.equalsIgnoreCase(newCricketMatchOddState.getBallState())) {
-                    setState(newCricketMatchOddState, currentBallState);
-                    CompletableFuture.runAsync(() -> updateWinningStatusOfUser(matchPageResponse), executorService);
+            try {
+                Integer matchId = matchPageResponse.getMatchId();
+                if (!matchIds.contains(matchId)) {
+                    return;
                 }
-            } else {
-                setState(newCricketMatchOddState, ballState);
-                newCricketMatchOddState.setMatchId(matchId);
+                CricketMatchOddState newCricketMatchOddState = new CricketMatchOddState();
+                String ballState = newCricketMatchOddState.getBallState();
+                if (matchIdToCricketMatchOddStateMap.containsKey(matchId)) {
+                    newCricketMatchOddState = matchIdToCricketMatchOddStateMap.get(matchId);
+                    String currentBallState = getCurrentBallState(matchPageResponse, matchIdToCricketMatchesResponse, matchId);
+                    if (!currentBallState.equalsIgnoreCase(newCricketMatchOddState.getBallState())) {
+                        setState(newCricketMatchOddState, currentBallState);
+                        CompletableFuture.runAsync(() -> updateWinningStatusOfUser(matchPageResponse), executorService);
+                    }
+                } else {
+                    setState(newCricketMatchOddState, ballState);
+                    newCricketMatchOddState.setMatchId(matchId);
+                }
+                cricketMatchOddStateList.add(newCricketMatchOddState);
+            } catch (Exception e) {
+                log.error("caught exception here in cricketOddsRefreshUpdate with stack_trace : {}", ExceptionUtils.getStackTrace(e));
             }
-            cricketMatchOddStateList.add(newCricketMatchOddState);
         });
         databaseHelper.saveAllCricketMatchStateOddManagement(cricketMatchOddStateList);
     }
