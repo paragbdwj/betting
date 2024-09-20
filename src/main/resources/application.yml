@@ -1,11 +1,10 @@
 spring:
     application:
         name: betting
-
     datasource:
-        url: ${SQL_DATABASE_URL:jdbc:postgresql://root:1BAsAQQv7ZWMOIpeWoPhnpAoYKdJckcz@dpg-crmldc5umphs739gjn6g-a.oregon-postgres.render.com/betting_21sh}
-        username: ${SQL_USERNAME:root}
-        password: ${SQL_PASSWORD:1BAsAQQv7ZWMOIpeWoPhnpAoYKdJckcz}
+        url: jdbc:postgresql://dpg-crmldc5umphs739gjn6g-a.oregon-postgres.render.com:5432/betting_21sh
+        username: root
+        password: 1BAsAQQv7ZWMOIpeWoPhnpAoYKdJckcz
         driver-class-name: org.postgresql.Driver
         hikari:
             maximum-pool-size: 10
