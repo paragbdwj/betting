@@ -1,28 +1,5 @@
 spring:
     application:
         name: betting
-    datasource:
-        url: jdbc:postgresql://dpg-crmldc5umphs739gjn6g-a.oregon-postgres.render.com:5432/betting_21sh
-        username: root
-        password: 1BAsAQQv7ZWMOIpeWoPhnpAoYKdJckcz
-        driver-class-name: org.postgresql.Driver
-        hikari:
-            maximum-pool-size: 10
-            minimum-idle: 5
-            idle-timeout: 30000
-            max-lifetime: 600000
-
-    jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect
-        hibernate:
-            ddl-auto: update
-        show-sql: false
-
-# stake-related properties
-inhouse:
-    cut:
-        percentage: 0.7
-
-allowed:
-    origins:
-        ${ALLOWED_ORIGINS:http://localhost:3000}
+    profiles:
+        active: ${SPRING_PROFILE_ACTIVE:dev}
