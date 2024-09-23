@@ -2,4 +2,4 @@ spring:
     application:
         name: betting
     profiles:
-        active: ${SPRING_PROFILE_ACTIVE:dev}
+        active: ${SPRING_PROFILE_ACTIVE:prod}
