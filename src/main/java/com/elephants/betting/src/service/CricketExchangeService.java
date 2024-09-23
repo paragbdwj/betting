@@ -217,7 +217,7 @@ public class CricketExchangeService {
 
         // Parsing the JSON data
         JSONObject jsonObject = new JSONObject(jsonString);
-        return jsonObject.getJSONObject("https://api-v1.com/v1/sV3.php");
+        return jsonObject.getJSONObject("https://api-v1.com/v10/sV3.php");
     }
 
     private List<String> getOverResults(Document document) {

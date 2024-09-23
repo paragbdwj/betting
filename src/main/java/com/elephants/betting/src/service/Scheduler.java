@@ -78,7 +78,7 @@ public class Scheduler {
         try {
             matchPageResponse  = cricketExchangeService.getMatchResult(MatchPageRequest.builder().matchId(matchId).build());
             matchIdToMatchPageResponse.put(matchId, matchPageResponse);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("caught error for matchId : {}",matchId);
             matchIdToMatchPageResponse.put(matchId, matchPageResponse);
         }

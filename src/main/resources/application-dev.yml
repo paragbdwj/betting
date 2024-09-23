@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/betting
     username: root
-    password: 1BAsAQQv7ZWMOIpeWoPhnpAoYKdJckcz
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10
@@ -21,7 +21,11 @@ spring:
 # stake-related properties
 inhouse:
   cut:
-    percentage: 0.7
+    ratio: 0.7
+
+bonus:
+  money:
+    ratio: 0.5
 
 allowed:
   origins:
